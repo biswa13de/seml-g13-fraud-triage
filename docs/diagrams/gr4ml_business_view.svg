@@ -1,0 +1,200 @@
+<svg xmlns="http://www.w3.org/2000/svg" font-family="Source Sans 3, Helvetica, Arial, sans-serif" viewBox="0 0 1280 760" role="img" aria-label="Business View: four actors desire goals; a strategic goal breaks into three decision goals under AND; each decision goal is answered by a question goal; each question is answered by an insight."><rect width="1280" height="760" fill="#faf9f7"/>
+        <defs>
+          <marker id="arrSolid" markerWidth="9" markerHeight="9" refX="8" refY="3" orient="auto">
+            <path d="M0,0 L0,6 L8,3 z" fill="#1c1d1f"/>
+          </marker>
+          <marker id="arrDash" markerWidth="9" markerHeight="9" refX="8" refY="3" orient="auto">
+            <path d="M0,0 L0,6 L8,3 z" fill="#1c1d1f"/>
+          </marker>
+        </defs>
+
+        <!-- Actors -->
+        <g font-size="11.5" font-weight="600">
+          <g transform="translate(26,40)">
+            <circle cx="16" cy="9" r="8" fill="none" stroke="#1c1d1f" stroke-width="1.6"/>
+            <line x1="16" y1="17" x2="16" y2="42" stroke="#1c1d1f" stroke-width="1.6"/>
+            <line x1="16" y1="23" x2="2" y2="34" stroke="#1c1d1f" stroke-width="1.6"/>
+            <line x1="16" y1="23" x2="30" y2="34" stroke="#1c1d1f" stroke-width="1.6"/>
+            <line x1="16" y1="42" x2="3" y2="62" stroke="#1c1d1f" stroke-width="1.6"/>
+            <line x1="16" y1="42" x2="29" y2="62" stroke="#1c1d1f" stroke-width="1.6"/>
+            <text x="16" y="80" text-anchor="middle">Risk Manager</text>
+          </g>
+          <g transform="translate(26,230)">
+            <circle cx="16" cy="9" r="8" fill="none" stroke="#1c1d1f" stroke-width="1.6"/>
+            <line x1="16" y1="17" x2="16" y2="42" stroke="#1c1d1f" stroke-width="1.6"/>
+            <line x1="16" y1="23" x2="2" y2="34" stroke="#1c1d1f" stroke-width="1.6"/>
+            <line x1="16" y1="23" x2="30" y2="34" stroke="#1c1d1f" stroke-width="1.6"/>
+            <line x1="16" y1="42" x2="3" y2="62" stroke="#1c1d1f" stroke-width="1.6"/>
+            <line x1="16" y1="42" x2="29" y2="62" stroke="#1c1d1f" stroke-width="1.6"/>
+            <text x="16" y="80" text-anchor="middle">Customer</text>
+          </g>
+          <g transform="translate(26,420)">
+            <circle cx="16" cy="9" r="8" fill="none" stroke="#1c1d1f" stroke-width="1.6"/>
+            <line x1="16" y1="17" x2="16" y2="42" stroke="#1c1d1f" stroke-width="1.6"/>
+            <line x1="16" y1="23" x2="2" y2="34" stroke="#1c1d1f" stroke-width="1.6"/>
+            <line x1="16" y1="23" x2="30" y2="34" stroke="#1c1d1f" stroke-width="1.6"/>
+            <line x1="16" y1="42" x2="3" y2="62" stroke="#1c1d1f" stroke-width="1.6"/>
+            <line x1="16" y1="42" x2="29" y2="62" stroke="#1c1d1f" stroke-width="1.6"/>
+            <text x="16" y="80" text-anchor="middle">Fraud Analyst</text>
+          </g>
+          <g transform="translate(26,600)">
+            <circle cx="16" cy="9" r="8" fill="none" stroke="#1c1d1f" stroke-width="1.6"/>
+            <line x1="16" y1="17" x2="16" y2="42" stroke="#1c1d1f" stroke-width="1.6"/>
+            <line x1="16" y1="23" x2="2" y2="34" stroke="#1c1d1f" stroke-width="1.6"/>
+            <line x1="16" y1="23" x2="30" y2="34" stroke="#1c1d1f" stroke-width="1.6"/>
+            <line x1="16" y1="42" x2="3" y2="62" stroke="#1c1d1f" stroke-width="1.6"/>
+            <line x1="16" y1="42" x2="29" y2="62" stroke="#1c1d1f" stroke-width="1.6"/>
+            <text x="16" y="80" text-anchor="middle">Compliance</text>
+          </g>
+        </g>
+
+        <!-- Strategic goal -->
+        <ellipse cx="280" cy="60" rx="110" ry="36" fill="#fff4d6" stroke="#b8872b" stroke-width="1.8"/>
+        <text x="280" y="55" text-anchor="middle" font-size="11.5" font-weight="700">G0 · Grow digital payments</text>
+        <text x="280" y="69" text-anchor="middle" font-size="11.5" font-weight="700">safely</text>
+
+        <!-- AND split -->
+        <line x1="280" y1="96" x2="280" y2="118" stroke="#1c1d1f" stroke-width="1.4"/>
+        <text x="296" y="112" font-size="10.5" font-weight="700">AND</text>
+        <line x1="190" y1="118" x2="370" y2="118" stroke="#1c1d1f" stroke-width="1.4"/>
+        <line x1="190" y1="118" x2="190" y2="148" stroke="#1c1d1f" stroke-width="1.4"/>
+        <line x1="280" y1="118" x2="280" y2="148" stroke="#1c1d1f" stroke-width="1.4"/>
+        <line x1="370" y1="118" x2="370" y2="148" stroke="#1c1d1f" stroke-width="1.4"/>
+
+        <!-- D1 -->
+        <ellipse cx="190" cy="200" rx="115" ry="50" fill="#fff4d6" stroke="#b8872b" stroke-width="1.8"/>
+        <text x="95" y="178" font-size="19" font-weight="700" font-style="italic">D</text>
+        <text x="190" y="190" text-anchor="middle" font-size="11" font-weight="700">D1 · Decide action for</text>
+        <text x="190" y="204" text-anchor="middle" font-size="11" font-weight="700">an incoming payment</text>
+        <text x="190" y="221" text-anchor="middle" font-size="10" fill="#55585e">(Allow / Step-Up / Block)</text>
+
+        <!-- D2 -->
+        <ellipse cx="280" cy="380" rx="115" ry="50" fill="#fff4d6" stroke="#b8872b" stroke-width="1.8"/>
+        <text x="185" y="358" font-size="19" font-weight="700" font-style="italic">D</text>
+        <text x="280" y="370" text-anchor="middle" font-size="11" font-weight="700">D2 · Decide which case</text>
+        <text x="280" y="384" text-anchor="middle" font-size="11" font-weight="700">to review first</text>
+        <text x="280" y="401" text-anchor="middle" font-size="10" fill="#55585e">(priority ranking)</text>
+
+        <!-- D3 -->
+        <ellipse cx="370" cy="560" rx="115" ry="50" fill="#fff4d6" stroke="#b8872b" stroke-width="1.8"/>
+        <text x="275" y="538" font-size="19" font-weight="700" font-style="italic">D</text>
+        <text x="370" y="550" text-anchor="middle" font-size="11" font-weight="700">D3 · Decide whether to</text>
+        <text x="370" y="564" text-anchor="middle" font-size="11" font-weight="700">block the payee VPA</text>
+
+        <!-- desires lines from actors -->
+        <line x1="62" y1="68" x2="78" y2="190" stroke="#1c1d1f" stroke-width="1.2" marker-end="url(#arrSolid)"/>
+        <text x="48" y="130" font-size="10" font-style="italic">desires</text>
+        <line x1="62" y1="258" x2="180" y2="150" stroke="#1c1d1f" stroke-width="1.2" marker-end="url(#arrSolid)"/>
+        <text x="90" y="210" font-size="10" font-style="italic">desires</text>
+        <line x1="62" y1="448" x2="258" y2="400" stroke="#1c1d1f" stroke-width="1.2" marker-end="url(#arrSolid)"/>
+        <text x="120" y="420" font-size="10" font-style="italic">desires</text>
+        <line x1="62" y1="628" x2="258" y2="575" stroke="#1c1d1f" stroke-width="1.2" marker-end="url(#arrSolid)"/>
+        <text x="120" y="610" font-size="10" font-style="italic">desires</text>
+
+        <!-- Indicators -->
+        <g transform="translate(140,95)">
+          <rect width="12" height="8" fill="#4CAF50" stroke="#1c1d1f" stroke-width="0.6"/>
+          <rect y="8" width="12" height="8" fill="#F2B100" stroke="#1c1d1f" stroke-width="0.6"/>
+          <rect y="16" width="12" height="8" fill="#D64545" stroke="#1c1d1f" stroke-width="0.6"/>
+        </g>
+        <text x="158" y="104" font-size="9.5" fill="#55585e">Fraud loss (bps)</text>
+        <line x1="146" y1="95" x2="146" y2="78" stroke="#1c1d1f" stroke-width="1"/>
+        <text x="152" y="88" font-size="9" font-style="italic">evaluates</text>
+
+        <g transform="translate(362,318)">
+          <rect width="12" height="8" fill="#4CAF50" stroke="#1c1d1f" stroke-width="0.6"/>
+          <rect y="8" width="12" height="8" fill="#F2B100" stroke="#1c1d1f" stroke-width="0.6"/>
+          <rect y="16" width="12" height="8" fill="#D64545" stroke="#1c1d1f" stroke-width="0.6"/>
+        </g>
+        <text x="380" y="328" font-size="9.5" fill="#55585e">False-decline rate</text>
+
+        <!-- Question goals -->
+        <ellipse cx="640" cy="200" rx="150" ry="50" fill="#dcebff" stroke="#2f5fa3" stroke-width="1.8"/>
+        <text x="500" y="178" font-size="19" font-weight="700" font-style="italic">Q</text>
+        <text x="640" y="188" text-anchor="middle" font-size="11" font-weight="700">Q1 · What is the probability</text>
+        <text x="640" y="202" text-anchor="middle" font-size="11" font-weight="700">this payment is fraudulent?</text>
+        <text x="640" y="219" text-anchor="middle" font-size="10" fill="#55585e">answered per transaction</text>
+
+        <ellipse cx="640" cy="330" rx="150" ry="50" fill="#dcebff" stroke="#2f5fa3" stroke-width="1.8"/>
+        <text x="500" y="308" font-size="19" font-weight="700" font-style="italic">Q</text>
+        <text x="640" y="320" text-anchor="middle" font-size="11" font-weight="700">Q2 · Which factors make</text>
+        <text x="640" y="334" text-anchor="middle" font-size="11" font-weight="700">this payment risky?</text>
+        <text x="640" y="351" text-anchor="middle" font-size="10" fill="#55585e">(reason codes)</text>
+
+        <ellipse cx="640" cy="460" rx="150" ry="50" fill="#dcebff" stroke="#2f5fa3" stroke-width="1.8"/>
+        <text x="500" y="438" font-size="19" font-weight="700" font-style="italic">Q</text>
+        <text x="640" y="450" text-anchor="middle" font-size="11" font-weight="700">Q3 · What is the expected</text>
+        <text x="640" y="464" text-anchor="middle" font-size="11" font-weight="700">loss of this flagged case?</text>
+
+        <!-- D -> Q -->
+        <line x1="305" y1="190" x2="490" y2="195" stroke="#1c1d1f" stroke-width="1.3" marker-end="url(#arrSolid)"/>
+        <text x="370" y="183" font-size="9" font-style="italic">answered-by</text>
+        <line x1="305" y1="215" x2="490" y2="320" stroke="#1c1d1f" stroke-width="1.3" marker-end="url(#arrSolid)"/>
+        <line x1="395" y1="380" x2="490" y2="450" stroke="#1c1d1f" stroke-width="1.3" marker-end="url(#arrSolid)"/>
+
+        <!-- Insights -->
+        <rect x="870" y="110" width="360" height="170" rx="4" fill="#ffffff" stroke="#1c1d1f" stroke-width="1.6"/>
+        <line x1="870" y1="140" x2="1230" y2="140" stroke="#1c1d1f" stroke-width="1.2"/>
+        <text x="1050" y="131" text-anchor="middle" font-size="11.5" font-weight="700">Payment Fraud Risk Predictive Model</text>
+        <g font-size="10" font-family="JetBrains Mono, monospace">
+          <text x="882" y="157">type: Predictive</text>
+          <text x="882" y="174">input: payment + behavioural profile</text>
+          <text x="882" y="191">output: fraud probability (0-1)</text>
+          <text x="882" y="208">usageFrequency: per transaction</text>
+          <text x="882" y="225">updateFrequency: weekly</text>
+          <text x="882" y="242">learningPeriod: trailing 30 days</text>
+          <text x="882" y="259">champion: LightGBM (MLflow registry)</text>
+        </g>
+
+        <rect x="870" y="300" width="360" height="110" rx="4" fill="#ffffff" stroke="#1c1d1f" stroke-width="1.6"/>
+        <line x1="870" y1="330" x2="1230" y2="330" stroke="#1c1d1f" stroke-width="1.2"/>
+        <text x="1050" y="321" text-anchor="middle" font-size="11.5" font-weight="700">Risk Reason Codes</text>
+        <g font-size="10" font-family="JetBrains Mono, monospace">
+          <text x="882" y="347">type: Explanatory (SHAP)</text>
+          <text x="882" y="364">output: top-3 contributing features</text>
+          <text x="882" y="381">latency budget: &#8804;10ms p95</text>
+        </g>
+
+        <rect x="870" y="430" width="360" height="100" rx="4" fill="#ffffff" stroke="#1c1d1f" stroke-width="1.6"/>
+        <line x1="870" y1="460" x2="1230" y2="460" stroke="#1c1d1f" stroke-width="1.2"/>
+        <text x="1050" y="451" text-anchor="middle" font-size="11.5" font-weight="700">Case Priority Score</text>
+        <g font-size="10" font-family="JetBrains Mono, monospace">
+          <text x="882" y="477">type: Derived metric</text>
+          <text x="882" y="494">formula: risk_score &#215; amount</text>
+          <text x="882" y="511">output: ranked analyst queue</text>
+        </g>
+
+        <!-- Q -> Insight answers (dashed) -->
+        <path d="M790,195 C830,175 850,165 870,165" fill="none" stroke="#1c1d1f" stroke-width="1.3" stroke-dasharray="4,4" marker-end="url(#arrDash)"/>
+        <text x="800" y="165" font-size="9.5" font-style="italic">answers</text>
+        <path d="M790,330 C830,345 850,350 870,353" fill="none" stroke="#1c1d1f" stroke-width="1.3" stroke-dasharray="4,4" marker-end="url(#arrDash)"/>
+        <text x="800" y="355" font-size="9.5" font-style="italic">answers</text>
+        <path d="M790,460 C830,475 850,478 870,480" fill="none" stroke="#1c1d1f" stroke-width="1.3" stroke-dasharray="4,4" marker-end="url(#arrDash)"/>
+        <text x="800" y="480" font-size="9.5" font-style="italic">answers</text>
+
+        <!-- Legend -->
+        <g transform="translate(870,570)" font-size="10.5">
+          <rect width="370" height="170" rx="6" fill="#faf9f7" stroke="#c7c9cd"/>
+          <text x="185" y="22" text-anchor="middle" font-weight="700" font-size="12">Legend</text>
+          <g transform="translate(16,36)">
+            <circle cx="10" cy="7" r="6" fill="none" stroke="#1c1d1f" stroke-width="1.3"/>
+            <line x1="10" y1="13" x2="10" y2="24" stroke="#1c1d1f" stroke-width="1.3"/>
+          </g>
+          <text x="48" y="45">Actor</text>
+          <ellipse cx="200" cy="40" rx="24" ry="12" fill="#fff4d6" stroke="#b8872b"/>
+          <text x="200" y="44" text-anchor="middle" font-size="9" font-style="italic" font-weight="700">D</text>
+          <text x="232" y="44">Decision / Strategic Goal</text>
+          <ellipse cx="200" cy="68" rx="24" ry="12" fill="#dcebff" stroke="#2f5fa3"/>
+          <text x="200" y="72" text-anchor="middle" font-size="9" font-style="italic" font-weight="700">Q</text>
+          <text x="232" y="72">Question Goal</text>
+          <rect x="178" y="88" width="44" height="18" fill="#ffffff" stroke="#1c1d1f"/>
+          <text x="232" y="100">Insight</text>
+          <g transform="translate(16,112)">
+            <rect width="11" height="7" fill="#4CAF50" stroke="#1c1d1f" stroke-width="0.5"/>
+            <rect y="7" width="11" height="7" fill="#F2B100" stroke="#1c1d1f" stroke-width="0.5"/>
+            <rect y="14" width="11" height="7" fill="#D64545" stroke="#1c1d1f" stroke-width="0.5"/>
+          </g>
+          <text x="48" y="124">Indicator</text>
+          <text x="16" y="148" font-style="italic">desires &#8594;   evaluates &#8213;   answers - -&#8594;   AND split</text>
+        </g>
+      </svg>

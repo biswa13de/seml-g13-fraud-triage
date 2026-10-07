@@ -1,0 +1,106 @@
+<svg xmlns="http://www.w3.org/2000/svg" font-family="Source Sans 3, Helvetica, Arial, sans-serif" viewBox="0 0 1240 420" role="img" aria-label="Data Preparation View: PaySimTransaction entity flows through filter, leakage-removal, windowed aggregation, derive, encode and split operators into the TrainingFeatureTable output entity."><rect width="1240" height="420" fill="#faf9f7"/>
+        <defs>
+          <marker id="arrSolid" markerWidth="9" markerHeight="9" refX="8" refY="3" orient="auto">
+            <path d="M0,0 L0,6 L8,3 z" fill="#1c1d1f"/>
+          </marker>
+          <marker id="arrDash" markerWidth="9" markerHeight="9" refX="8" refY="3" orient="auto">
+            <path d="M0,0 L0,6 L8,3 z" fill="#1c1d1f"/>
+          </marker>
+          <marker id="arrEvent" markerWidth="9" markerHeight="9" refX="8" refY="3" orient="auto">
+            <path d="M0,0 L0,6 L8,3 z" fill="#7a4fb5"/>
+          </marker>
+          <marker id="arrSync" markerWidth="9" markerHeight="9" refX="8" refY="3" orient="auto">
+            <path d="M0,0 L0,6 L8,3 z" fill="#1c1d1f"/>
+          </marker>
+        </defs>
+        <!-- Source entity -->
+        <rect x="20" y="40" width="220" height="200" fill="#ffffff" stroke="#1c1d1f" stroke-width="1.6"/>
+        <text x="130" y="60" text-anchor="middle" font-size="12" font-weight="700">PaySimTransaction</text>
+        <line x1="20" y1="70" x2="240" y2="70" stroke="#1c1d1f" stroke-width="1.2"/>
+        <g font-size="10" font-family="JetBrains Mono, monospace">
+          <text x="32" y="88" font-weight="700">txn_id (PK)</text>
+          <text x="32" y="104">step, type, amount</text>
+          <text x="32" y="120">nameOrig, oldbalanceOrg</text>
+          <text x="32" y="136">nameDest, oldbalanceDest</text>
+          <text x="32" y="152" fill="#c0392b">newbalanceOrig (dropped)</text>
+          <text x="32" y="168" fill="#c0392b">newbalanceDest (dropped)</text>
+          <text x="32" y="184">isFraud</text>
+          <text x="32" y="200" fill="#c0392b">isFlaggedFraud (baseline only)</text>
+        </g>
+
+        <!-- Operators chain -->
+        <g font-size="10.5" font-weight="700" text-anchor="middle">
+          <rect x="280" y="50" width="130" height="46" fill="#ffffff" stroke="#1c1d1f" stroke-width="1.6"/>
+          <text x="345" y="70">Filter</text>
+          <text x="345" y="84" font-size="8.5" font-weight="400" fill="#55585e">type IN (TRANSFER,</text>
+          <text x="345" y="94" font-size="8.5" font-weight="400" fill="#55585e">CASH_OUT)</text>
+
+          <rect x="280" y="112" width="130" height="46" fill="#ffffff" stroke="#c0392b" stroke-width="1.8"/>
+          <text x="345" y="132">Leakage removal</text>
+          <text x="345" y="146" font-size="8.5" font-weight="400" fill="#55585e">drop post-txn balances</text>
+
+          <rect x="280" y="174" width="130" height="46" fill="#ffffff" stroke="#1c1d1f" stroke-width="1.6"/>
+          <text x="345" y="194">Clean</text>
+          <text x="345" y="208" font-size="8.5" font-weight="400" fill="#55585e">dedupe, validate</text>
+
+          <rect x="470" y="50" width="150" height="56" fill="#ffffff" stroke="#1c1d1f" stroke-width="1.6"/>
+          <text x="545" y="70">Windowed</text>
+          <text x="545" y="84">aggregation</text>
+          <text x="545" y="98" font-size="8.5" font-weight="400" fill="#55585e">24h receiver velocity</text>
+
+          <rect x="470" y="120" width="150" height="56" fill="#ffffff" stroke="#1c1d1f" stroke-width="1.6"/>
+          <text x="545" y="140">Derive</text>
+          <text x="545" y="154" font-size="8.5" font-weight="400" fill="#55585e">drains_account, is_night,</text>
+          <text x="545" y="166" font-size="8.5" font-weight="400" fill="#55585e">amount_to_balance_ratio</text>
+
+          <rect x="470" y="190" width="150" height="46" fill="#ffffff" stroke="#1c1d1f" stroke-width="1.6"/>
+          <text x="545" y="210">Encode</text>
+          <text x="545" y="224" font-size="8.5" font-weight="400" fill="#55585e">one-hot type</text>
+
+          <rect x="680" y="90" width="150" height="46" fill="#ffffff" stroke="#1c1d1f" stroke-width="1.6"/>
+          <text x="755" y="110">Split</text>
+          <text x="755" y="124" font-size="8.5" font-weight="400" fill="#55585e">time-based on step</text>
+
+          <rect x="680" y="150" width="150" height="46" fill="#ffffff" stroke="#1c1d1f" stroke-width="1.6"/>
+          <text x="755" y="170">Imbalance handling</text>
+          <text x="755" y="184" font-size="8.5" font-weight="400" fill="#55585e">scale_pos_weight</text>
+        </g>
+
+        <!-- flow arrows -->
+        <g stroke="#1c1d1f" stroke-width="1.3" marker-end="url(#arrSolid)">
+          <line x1="240" y1="73" x2="280" y2="73"/>
+          <line x1="345" y1="96" x2="345" y2="112"/>
+          <line x1="345" y1="158" x2="345" y2="174"/>
+          <line x1="410" y1="80" x2="470" y2="78"/>
+          <line x1="545" y1="106" x2="545" y2="120"/>
+          <line x1="545" y1="176" x2="545" y2="190"/>
+          <line x1="620" y1="213" x2="680" y2="155"/>
+          <line x1="620" y1="78" x2="680" y2="113"/>
+          <line x1="755" y1="136" x2="755" y2="150"/>
+          <line x1="830" y1="113" x2="900" y2="113"/>
+        </g>
+
+        <!-- Output entity -->
+        <rect x="900" y="60" width="300" height="190" fill="#ffffff" stroke="#1c1d1f" stroke-width="2"/>
+        <text x="1050" y="82" text-anchor="middle" font-size="12" font-weight="700">TrainingFeatureTable</text>
+        <line x1="900" y1="92" x2="1200" y2="92" stroke="#1c1d1f" stroke-width="1.2"/>
+        <g font-size="10" font-family="JetBrains Mono, monospace">
+          <text x="912" y="110" font-weight="700">txn_id (PK)</text>
+          <text x="912" y="126">13 pre-transaction features</text>
+          <text x="912" y="142">(see common/features.py)</text>
+          <text x="912" y="162">isFraud (label)</text>
+          <text x="912" y="182">split: train / valid / test</text>
+          <text x="912" y="202">(steps 1-500/501-600/601-743)</text>
+        </g>
+
+        <!-- Note -->
+        <g transform="translate(280,260)">
+          <path d="M0,0 L380,0 L380,96 L18,96 L0,78 Z" fill="#faf9f7" stroke="#c7c9cd"/>
+          <path d="M0,78 L18,78 L18,96 Z" fill="#c7c9cd"/>
+          <text x="14" y="20" font-size="10.5" font-weight="700">Note</text>
+          <text x="14" y="38" font-size="9.5">Point-in-time correctness: 24h velocity counts only</text>
+          <text x="14" y="52" font-size="9.5">payments that happened BEFORE the current row.</text>
+          <text x="14" y="66" font-size="9.5">The same compute_features() runs in training and in</text>
+          <text x="14" y="80" font-size="9.5">scoring-service — proven equal by tests/test_features_parity.py.</text>
+        </g>
+      </svg>

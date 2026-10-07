@@ -1,0 +1,737 @@
+<title>GR4ML Views — Group 13</title>
+<style>
+  :root {
+    --bg: #faf9f7;
+    --surface: #ffffff;
+    --ink: #1c1d1f;
+    --ink-soft: #55585e;
+    --line: #2b2d31;
+    --line-soft: #c7c9cd;
+    --goal: #fff4d6;
+    --goal-line: #b8872b;
+    --question: #dcebff;
+    --question-line: #2f5fa3;
+    --algo: #e3f6e8;
+    --algo-line: #2f8f52;
+    --soft: #f1e8fb;
+    --soft-line: #7a4fb5;
+    --entity: #ffffff;
+    --accent: #c0392b;
+    --ml: #e3f0ff;
+    --ml-line: #2f5fa3;
+    --nonml: #fdeedb;
+    --nonml-line: #c07a1f;
+    --event: #f1e8fb;
+    --event-line: #7a4fb5;
+    color-scheme: light;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #17181a;
+      --surface: #1f2023;
+      --ink: #eceef0;
+      --ink-soft: #a9adb3;
+      --line: #d7d9dc;
+      --line-soft: #4b4e54;
+      --goal: #3a301a;
+      --goal-line: #d9a94b;
+      --question: #1c2c42;
+      --question-line: #6a9bdc;
+      --algo: #1a3324;
+      --algo-line: #5fbd82;
+      --soft: #2a2140;
+      --soft-line: #ab86e6;
+      --ml: #1c2c42;
+      --ml-line: #6a9bdc;
+      --nonml: #3a2c17;
+      --nonml-line: #d9a04b;
+      --event: #2a2140;
+      --event-line: #ab86e6;
+      color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #17181a;
+    --surface: #1f2023;
+    --ink: #eceef0;
+    --ink-soft: #a9adb3;
+    --line: #d7d9dc;
+    --line-soft: #4b4e54;
+    --goal: #3a301a;
+    --goal-line: #d9a94b;
+    --question: #1c2c42;
+    --question-line: #6a9bdc;
+    --algo: #1a3324;
+    --algo-line: #5fbd82;
+    --soft: #2a2140;
+    --soft-line: #ab86e6;
+    --ml: #1c2c42;
+    --ml-line: #6a9bdc;
+    --nonml: #3a2c17;
+    --nonml-line: #d9a04b;
+    --event: #2a2140;
+    --event-line: #ab86e6;
+    color-scheme: dark;
+  }
+  * { box-sizing: border-box; }
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: "Source Sans 3", Helvetica, Arial, sans-serif;
+    margin: 0;
+    padding-inline: 20px;
+    padding-block: 28px;
+  }
+  @import url('https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700&family=JetBrains+Mono:wght@500&display=swap');
+  .wrap { max-width: 1240px; margin: 0 auto; }
+  header.page { margin-bottom: 28px; }
+  h1 { font-size: 1.6rem; margin: 0 0 4px; letter-spacing: -0.01em; }
+  .meta { color: var(--ink-soft); font-size: 0.92rem; }
+  nav.toc {
+    display: flex; flex-wrap: wrap; gap: 8px; margin: 18px 0 0;
+  }
+  nav.toc a {
+    font-size: 0.85rem; color: var(--ink-soft); text-decoration: none;
+    border: 1px solid var(--line-soft); border-radius: 999px; padding: 5px 13px;
+  }
+  nav.toc a:hover { border-color: var(--ink-soft); color: var(--ink); }
+  section.view {
+    background: var(--surface); border: 1px solid var(--line-soft);
+    border-radius: 14px; padding: 22px clamp(14px, 3vw, 30px); margin-bottom: 26px;
+  }
+  section.view h2 {
+    font-size: 1.15rem; margin: 0 0 4px; display: flex; align-items: baseline; gap: 10px;
+  }
+  section.view h2 .tag {
+    font-family: "JetBrains Mono", monospace; font-size: 0.7rem; color: var(--ink-soft);
+    border: 1px solid var(--line-soft); border-radius: 5px; padding: 2px 7px;
+  }
+  .dsc { color: var(--ink-soft); font-size: 0.9rem; margin: 2px 0 16px; max-width: 70ch; }
+  .svg-frame { width: 100%; overflow-x: auto; }
+  svg { width: 100%; height: auto; display: block; }
+  .svg-frame text { fill: var(--ink); }
+  .svg-frame .soft-text { fill: var(--ink-soft); }
+  figcaption { color: var(--ink-soft); font-size: 0.85rem; margin-top: 10px; }
+  table.elements {
+    width: 100%; border-collapse: collapse; font-size: 0.86rem; margin-top: 18px;
+  }
+  table.elements th, table.elements td {
+    text-align: left; padding: 7px 10px; border-bottom: 1px solid var(--line-soft); vertical-align: top;
+  }
+  table.elements th { color: var(--ink-soft); font-weight: 600; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.03em; }
+  code { font-family: "JetBrains Mono", monospace; font-size: 0.85em; background: var(--bg); padding: 1px 5px; border-radius: 4px; }
+  footer.note { color: var(--ink-soft); font-size: 0.82rem; text-align: center; margin-top: 10px; padding-bottom: 20px; }
+</style>
+
+<div class="wrap">
+  <header class="page">
+    <h1>GR4ML Views &amp; System Architecture</h1>
+    <div class="meta">AIMLZG546 Software Engineering for Machine Learning · Assignment I · Group 13 · Real-Time Digital Payment Fraud Risk Triage System</div>
+    <nav class="toc">
+      <a href="#business">Business View</a>
+      <a href="#analytics">Analytics Design View</a>
+      <a href="#dataprep">Data Preparation View</a>
+      <a href="#architecture">System Architecture</a>
+    </nav>
+  </header>
+
+  <!-- ======================= BUSINESS VIEW ======================= -->
+  <section class="view" id="business">
+    <h2>Business View <span class="tag">Why?</span></h2>
+    <p class="dsc">Actors, strategic and decision goals, the questions that must be answered to support each decision, and the insights that answer them. Elements follow the course's GR4ML legend: actor (stick figure), Strategic/Decision Goal (ellipse, D marker), Question Goal (ellipse, Q marker), Indicator (traffic-light), Insight (attribute box).</p>
+    <figure class="svg-frame">
+      <svg viewBox="0 0 1280 760" role="img" aria-label="Business View: four actors desire goals; a strategic goal breaks into three decision goals under AND; each decision goal is answered by a question goal; each question is answered by an insight.">
+        <defs>
+          <marker id="arrSolid" markerWidth="9" markerHeight="9" refX="8" refY="3" orient="auto">
+            <path d="M0,0 L0,6 L8,3 z" fill="currentColor"/>
+          </marker>
+          <marker id="arrDash" markerWidth="9" markerHeight="9" refX="8" refY="3" orient="auto">
+            <path d="M0,0 L0,6 L8,3 z" fill="currentColor"/>
+          </marker>
+        </defs>
+
+        <!-- Actors -->
+        <g font-size="11.5" font-weight="600">
+          <g transform="translate(26,40)">
+            <circle cx="16" cy="9" r="8" fill="none" stroke="currentColor" stroke-width="1.6"/>
+            <line x1="16" y1="17" x2="16" y2="42" stroke="currentColor" stroke-width="1.6"/>
+            <line x1="16" y1="23" x2="2" y2="34" stroke="currentColor" stroke-width="1.6"/>
+            <line x1="16" y1="23" x2="30" y2="34" stroke="currentColor" stroke-width="1.6"/>
+            <line x1="16" y1="42" x2="3" y2="62" stroke="currentColor" stroke-width="1.6"/>
+            <line x1="16" y1="42" x2="29" y2="62" stroke="currentColor" stroke-width="1.6"/>
+            <text x="16" y="80" text-anchor="middle">Risk Manager</text>
+          </g>
+          <g transform="translate(26,230)">
+            <circle cx="16" cy="9" r="8" fill="none" stroke="currentColor" stroke-width="1.6"/>
+            <line x1="16" y1="17" x2="16" y2="42" stroke="currentColor" stroke-width="1.6"/>
+            <line x1="16" y1="23" x2="2" y2="34" stroke="currentColor" stroke-width="1.6"/>
+            <line x1="16" y1="23" x2="30" y2="34" stroke="currentColor" stroke-width="1.6"/>
+            <line x1="16" y1="42" x2="3" y2="62" stroke="currentColor" stroke-width="1.6"/>
+            <line x1="16" y1="42" x2="29" y2="62" stroke="currentColor" stroke-width="1.6"/>
+            <text x="16" y="80" text-anchor="middle">Customer</text>
+          </g>
+          <g transform="translate(26,420)">
+            <circle cx="16" cy="9" r="8" fill="none" stroke="currentColor" stroke-width="1.6"/>
+            <line x1="16" y1="17" x2="16" y2="42" stroke="currentColor" stroke-width="1.6"/>
+            <line x1="16" y1="23" x2="2" y2="34" stroke="currentColor" stroke-width="1.6"/>
+            <line x1="16" y1="23" x2="30" y2="34" stroke="currentColor" stroke-width="1.6"/>
+            <line x1="16" y1="42" x2="3" y2="62" stroke="currentColor" stroke-width="1.6"/>
+            <line x1="16" y1="42" x2="29" y2="62" stroke="currentColor" stroke-width="1.6"/>
+            <text x="16" y="80" text-anchor="middle">Fraud Analyst</text>
+          </g>
+          <g transform="translate(26,600)">
+            <circle cx="16" cy="9" r="8" fill="none" stroke="currentColor" stroke-width="1.6"/>
+            <line x1="16" y1="17" x2="16" y2="42" stroke="currentColor" stroke-width="1.6"/>
+            <line x1="16" y1="23" x2="2" y2="34" stroke="currentColor" stroke-width="1.6"/>
+            <line x1="16" y1="23" x2="30" y2="34" stroke="currentColor" stroke-width="1.6"/>
+            <line x1="16" y1="42" x2="3" y2="62" stroke="currentColor" stroke-width="1.6"/>
+            <line x1="16" y1="42" x2="29" y2="62" stroke="currentColor" stroke-width="1.6"/>
+            <text x="16" y="80" text-anchor="middle">Compliance</text>
+          </g>
+        </g>
+
+        <!-- Strategic goal -->
+        <ellipse cx="280" cy="60" rx="110" ry="36" fill="var(--goal)" stroke="var(--goal-line)" stroke-width="1.8"/>
+        <text x="280" y="55" text-anchor="middle" font-size="11.5" font-weight="700">G0 · Grow digital payments</text>
+        <text x="280" y="69" text-anchor="middle" font-size="11.5" font-weight="700">safely</text>
+
+        <!-- AND split -->
+        <line x1="280" y1="96" x2="280" y2="118" stroke="currentColor" stroke-width="1.4"/>
+        <text x="296" y="112" font-size="10.5" font-weight="700">AND</text>
+        <line x1="190" y1="118" x2="370" y2="118" stroke="currentColor" stroke-width="1.4"/>
+        <line x1="190" y1="118" x2="190" y2="148" stroke="currentColor" stroke-width="1.4"/>
+        <line x1="280" y1="118" x2="280" y2="148" stroke="currentColor" stroke-width="1.4"/>
+        <line x1="370" y1="118" x2="370" y2="148" stroke="currentColor" stroke-width="1.4"/>
+
+        <!-- D1 -->
+        <ellipse cx="190" cy="200" rx="115" ry="50" fill="var(--goal)" stroke="var(--goal-line)" stroke-width="1.8"/>
+        <text x="95" y="178" font-size="19" font-weight="700" font-style="italic">D</text>
+        <text x="190" y="190" text-anchor="middle" font-size="11" font-weight="700">D1 · Decide action for</text>
+        <text x="190" y="204" text-anchor="middle" font-size="11" font-weight="700">an incoming payment</text>
+        <text x="190" y="221" text-anchor="middle" font-size="10" class="soft-text">(Allow / Step-Up / Block)</text>
+
+        <!-- D2 -->
+        <ellipse cx="280" cy="380" rx="115" ry="50" fill="var(--goal)" stroke="var(--goal-line)" stroke-width="1.8"/>
+        <text x="185" y="358" font-size="19" font-weight="700" font-style="italic">D</text>
+        <text x="280" y="370" text-anchor="middle" font-size="11" font-weight="700">D2 · Decide which case</text>
+        <text x="280" y="384" text-anchor="middle" font-size="11" font-weight="700">to review first</text>
+        <text x="280" y="401" text-anchor="middle" font-size="10" class="soft-text">(priority ranking)</text>
+
+        <!-- D3 -->
+        <ellipse cx="370" cy="560" rx="115" ry="50" fill="var(--goal)" stroke="var(--goal-line)" stroke-width="1.8"/>
+        <text x="275" y="538" font-size="19" font-weight="700" font-style="italic">D</text>
+        <text x="370" y="550" text-anchor="middle" font-size="11" font-weight="700">D3 · Decide whether to</text>
+        <text x="370" y="564" text-anchor="middle" font-size="11" font-weight="700">block the payee VPA</text>
+
+        <!-- desires lines from actors -->
+        <line x1="62" y1="68" x2="78" y2="190" stroke="currentColor" stroke-width="1.2" marker-end="url(#arrSolid)"/>
+        <text x="48" y="130" font-size="10" font-style="italic">desires</text>
+        <line x1="62" y1="258" x2="180" y2="150" stroke="currentColor" stroke-width="1.2" marker-end="url(#arrSolid)"/>
+        <text x="90" y="210" font-size="10" font-style="italic">desires</text>
+        <line x1="62" y1="448" x2="258" y2="400" stroke="currentColor" stroke-width="1.2" marker-end="url(#arrSolid)"/>
+        <text x="120" y="420" font-size="10" font-style="italic">desires</text>
+        <line x1="62" y1="628" x2="258" y2="575" stroke="currentColor" stroke-width="1.2" marker-end="url(#arrSolid)"/>
+        <text x="120" y="610" font-size="10" font-style="italic">desires</text>
+
+        <!-- Indicators -->
+        <g transform="translate(140,95)">
+          <rect width="12" height="8" fill="#4CAF50" stroke="currentColor" stroke-width="0.6"/>
+          <rect y="8" width="12" height="8" fill="#F2B100" stroke="currentColor" stroke-width="0.6"/>
+          <rect y="16" width="12" height="8" fill="#D64545" stroke="currentColor" stroke-width="0.6"/>
+        </g>
+        <text x="158" y="104" font-size="9.5" class="soft-text">Fraud loss (bps)</text>
+        <line x1="146" y1="95" x2="146" y2="78" stroke="currentColor" stroke-width="1"/>
+        <text x="152" y="88" font-size="9" font-style="italic">evaluates</text>
+
+        <g transform="translate(362,318)">
+          <rect width="12" height="8" fill="#4CAF50" stroke="currentColor" stroke-width="0.6"/>
+          <rect y="8" width="12" height="8" fill="#F2B100" stroke="currentColor" stroke-width="0.6"/>
+          <rect y="16" width="12" height="8" fill="#D64545" stroke="currentColor" stroke-width="0.6"/>
+        </g>
+        <text x="380" y="328" font-size="9.5" class="soft-text">False-decline rate</text>
+
+        <!-- Question goals -->
+        <ellipse cx="640" cy="200" rx="150" ry="50" fill="var(--question)" stroke="var(--question-line)" stroke-width="1.8"/>
+        <text x="500" y="178" font-size="19" font-weight="700" font-style="italic">Q</text>
+        <text x="640" y="188" text-anchor="middle" font-size="11" font-weight="700">Q1 · What is the probability</text>
+        <text x="640" y="202" text-anchor="middle" font-size="11" font-weight="700">this payment is fraudulent?</text>
+        <text x="640" y="219" text-anchor="middle" font-size="10" class="soft-text">answered per transaction</text>
+
+        <ellipse cx="640" cy="330" rx="150" ry="50" fill="var(--question)" stroke="var(--question-line)" stroke-width="1.8"/>
+        <text x="500" y="308" font-size="19" font-weight="700" font-style="italic">Q</text>
+        <text x="640" y="320" text-anchor="middle" font-size="11" font-weight="700">Q2 · Which factors make</text>
+        <text x="640" y="334" text-anchor="middle" font-size="11" font-weight="700">this payment risky?</text>
+        <text x="640" y="351" text-anchor="middle" font-size="10" class="soft-text">(reason codes)</text>
+
+        <ellipse cx="640" cy="460" rx="150" ry="50" fill="var(--question)" stroke="var(--question-line)" stroke-width="1.8"/>
+        <text x="500" y="438" font-size="19" font-weight="700" font-style="italic">Q</text>
+        <text x="640" y="450" text-anchor="middle" font-size="11" font-weight="700">Q3 · What is the expected</text>
+        <text x="640" y="464" text-anchor="middle" font-size="11" font-weight="700">loss of this flagged case?</text>
+
+        <!-- D -> Q -->
+        <line x1="305" y1="190" x2="490" y2="195" stroke="currentColor" stroke-width="1.3" marker-end="url(#arrSolid)"/>
+        <text x="370" y="183" font-size="9" font-style="italic">answered-by</text>
+        <line x1="305" y1="215" x2="490" y2="320" stroke="currentColor" stroke-width="1.3" marker-end="url(#arrSolid)"/>
+        <line x1="395" y1="380" x2="490" y2="450" stroke="currentColor" stroke-width="1.3" marker-end="url(#arrSolid)"/>
+
+        <!-- Insights -->
+        <rect x="870" y="110" width="360" height="170" rx="4" fill="var(--surface)" stroke="currentColor" stroke-width="1.6"/>
+        <line x1="870" y1="140" x2="1230" y2="140" stroke="currentColor" stroke-width="1.2"/>
+        <text x="1050" y="131" text-anchor="middle" font-size="11.5" font-weight="700">Payment Fraud Risk Predictive Model</text>
+        <g font-size="10" font-family="JetBrains Mono, monospace">
+          <text x="882" y="157">type: Predictive</text>
+          <text x="882" y="174">input: payment + behavioural profile</text>
+          <text x="882" y="191">output: fraud probability (0-1)</text>
+          <text x="882" y="208">usageFrequency: per transaction</text>
+          <text x="882" y="225">updateFrequency: weekly</text>
+          <text x="882" y="242">learningPeriod: trailing 30 days</text>
+          <text x="882" y="259">champion: LightGBM (MLflow registry)</text>
+        </g>
+
+        <rect x="870" y="300" width="360" height="110" rx="4" fill="var(--surface)" stroke="currentColor" stroke-width="1.6"/>
+        <line x1="870" y1="330" x2="1230" y2="330" stroke="currentColor" stroke-width="1.2"/>
+        <text x="1050" y="321" text-anchor="middle" font-size="11.5" font-weight="700">Risk Reason Codes</text>
+        <g font-size="10" font-family="JetBrains Mono, monospace">
+          <text x="882" y="347">type: Explanatory (SHAP)</text>
+          <text x="882" y="364">output: top-3 contributing features</text>
+          <text x="882" y="381">latency budget: &#8804;10ms p95</text>
+        </g>
+
+        <rect x="870" y="430" width="360" height="100" rx="4" fill="var(--surface)" stroke="currentColor" stroke-width="1.6"/>
+        <line x1="870" y1="460" x2="1230" y2="460" stroke="currentColor" stroke-width="1.2"/>
+        <text x="1050" y="451" text-anchor="middle" font-size="11.5" font-weight="700">Case Priority Score</text>
+        <g font-size="10" font-family="JetBrains Mono, monospace">
+          <text x="882" y="477">type: Derived metric</text>
+          <text x="882" y="494">formula: risk_score &#215; amount</text>
+          <text x="882" y="511">output: ranked analyst queue</text>
+        </g>
+
+        <!-- Q -> Insight answers (dashed) -->
+        <path d="M790,195 C830,175 850,165 870,165" fill="none" stroke="currentColor" stroke-width="1.3" stroke-dasharray="4,4" marker-end="url(#arrDash)"/>
+        <text x="800" y="165" font-size="9.5" font-style="italic">answers</text>
+        <path d="M790,330 C830,345 850,350 870,353" fill="none" stroke="currentColor" stroke-width="1.3" stroke-dasharray="4,4" marker-end="url(#arrDash)"/>
+        <text x="800" y="355" font-size="9.5" font-style="italic">answers</text>
+        <path d="M790,460 C830,475 850,478 870,480" fill="none" stroke="currentColor" stroke-width="1.3" stroke-dasharray="4,4" marker-end="url(#arrDash)"/>
+        <text x="800" y="480" font-size="9.5" font-style="italic">answers</text>
+
+        <!-- Legend -->
+        <g transform="translate(870,570)" font-size="10.5">
+          <rect width="370" height="170" rx="6" fill="var(--bg)" stroke="var(--line-soft)"/>
+          <text x="185" y="22" text-anchor="middle" font-weight="700" font-size="12">Legend</text>
+          <g transform="translate(16,36)">
+            <circle cx="10" cy="7" r="6" fill="none" stroke="currentColor" stroke-width="1.3"/>
+            <line x1="10" y1="13" x2="10" y2="24" stroke="currentColor" stroke-width="1.3"/>
+          </g>
+          <text x="48" y="45">Actor</text>
+          <ellipse cx="200" cy="40" rx="24" ry="12" fill="var(--goal)" stroke="var(--goal-line)"/>
+          <text x="200" y="44" text-anchor="middle" font-size="9" font-style="italic" font-weight="700">D</text>
+          <text x="232" y="44">Decision / Strategic Goal</text>
+          <ellipse cx="200" cy="68" rx="24" ry="12" fill="var(--question)" stroke="var(--question-line)"/>
+          <text x="200" y="72" text-anchor="middle" font-size="9" font-style="italic" font-weight="700">Q</text>
+          <text x="232" y="72">Question Goal</text>
+          <rect x="178" y="88" width="44" height="18" fill="var(--surface)" stroke="currentColor"/>
+          <text x="232" y="100">Insight</text>
+          <g transform="translate(16,112)">
+            <rect width="11" height="7" fill="#4CAF50" stroke="currentColor" stroke-width="0.5"/>
+            <rect y="7" width="11" height="7" fill="#F2B100" stroke="currentColor" stroke-width="0.5"/>
+            <rect y="14" width="11" height="7" fill="#D64545" stroke="currentColor" stroke-width="0.5"/>
+          </g>
+          <text x="48" y="124">Indicator</text>
+          <text x="16" y="148" font-style="italic">desires &#8594;   evaluates &#8213;   answers - -&#8594;   AND split</text>
+        </g>
+      </svg>
+      <figcaption>Business View — four actors desire a strategic goal that splits (AND) into three decision goals; each decision goal is answered by a question goal, each answered by an insight (the predictive model, its reason codes, and the derived case-priority score).</figcaption>
+    </figure>
+
+    <table class="elements">
+      <tr><th>Element</th><th>Instances in this system</th></tr>
+      <tr><td>Actor</td><td>Fraud Risk Manager, Customer (Payer), Fraud Analyst, Compliance Officer</td></tr>
+      <tr><td>Strategic Goal</td><td>G0: Grow digital payments safely</td></tr>
+      <tr><td>Decision Goal</td><td>D1: triage action per payment · D2: case review priority · D3: block payee VPA</td></tr>
+      <tr><td>Question Goal</td><td>Q1: fraud probability? · Q2: which risk factors? · Q3: expected loss of case?</td></tr>
+      <tr><td>Insight</td><td>Payment Fraud Risk Predictive Model · Risk Reason Codes · Case Priority Score</td></tr>
+      <tr><td>Indicator</td><td>Fraud loss (bps of GMV) · False-decline rate (%)</td></tr>
+    </table>
+  </section>
+
+  <!-- ======================= ANALYTICS DESIGN VIEW ======================= -->
+  <section class="view" id="analytics">
+    <h2>Analytics Design View <span class="tag">What?</span></h2>
+    <p class="dsc">Analytics goals, the algorithms considered for each, and the softgoals (quality attributes) that influence algorithm choice. Mirrors the three models actually trained and compared in MLflow (training/train.py).</p>
+    <figure class="svg-frame">
+      <svg viewBox="0 0 1200 560" role="img" aria-label="Analytics Design View: three analytics goals, four candidate algorithms with positive and negative influence arrows to four softgoals, and satisfied/denied marks on the chosen champion.">
+        <!-- Analytics goals -->
+        <ellipse cx="170" cy="90" rx="135" ry="48" fill="var(--question)" stroke="var(--question-line)" stroke-width="1.8"/>
+        <text x="170" y="82" text-anchor="middle" font-size="11" font-weight="700">AG1 · Classification of</text>
+        <text x="170" y="96" text-anchor="middle" font-size="11" font-weight="700">payment as fraud/genuine</text>
+        <text x="170" y="112" text-anchor="middle" font-size="9.5" class="soft-text">(PredictionGoal)</text>
+
+        <ellipse cx="170" cy="260" rx="135" ry="48" fill="var(--question)" stroke="var(--question-line)" stroke-width="1.8"/>
+        <text x="170" y="252" text-anchor="middle" font-size="11" font-weight="700">AG2 · Recommend triage</text>
+        <text x="170" y="266" text-anchor="middle" font-size="11" font-weight="700">action, minimise cost</text>
+        <text x="170" y="282" text-anchor="middle" font-size="9.5" class="soft-text">(PrescriptionGoal)</text>
+
+        <ellipse cx="170" cy="430" rx="135" ry="48" fill="var(--question)" stroke="var(--question-line)" stroke-width="1.8"/>
+        <text x="170" y="422" text-anchor="middle" font-size="11" font-weight="700">AG3 · Explain the drivers</text>
+        <text x="170" y="436" text-anchor="middle" font-size="11" font-weight="700">of each risk score</text>
+        <text x="170" y="452" text-anchor="middle" font-size="9.5" class="soft-text">(DescriptionGoal)</text>
+
+        <!-- Algorithms (hexagons) -->
+        <g>
+          <!-- helper hexagon path generator inlined per-shape -->
+          <polygon points="470,45 520,45 545,90 520,135 470,135 445,90" fill="var(--algo)" stroke="var(--algo-line)" stroke-width="1.8"/>
+          <text x="495" y="85" text-anchor="middle" font-size="10.5" font-weight="700">Logistic</text>
+          <text x="495" y="98" text-anchor="middle" font-size="10.5" font-weight="700">Regression</text>
+
+          <polygon points="470,155 520,155 545,200 520,245 470,245 445,200" fill="var(--algo)" stroke="var(--algo-line)" stroke-width="1.8"/>
+          <text x="495" y="195" text-anchor="middle" font-size="10.5" font-weight="700">Random</text>
+          <text x="495" y="208" text-anchor="middle" font-size="10.5" font-weight="700">Forest</text>
+
+          <polygon points="470,265 520,265 545,310 520,355 470,355 445,310" fill="var(--algo)" stroke="var(--algo-line)" stroke-width="2.6"/>
+          <text x="495" y="305" text-anchor="middle" font-size="10.5" font-weight="700">LightGBM</text>
+          <text x="495" y="318" text-anchor="middle" font-size="9" fill="var(--accent)" font-weight="700">champion</text>
+
+          <polygon points="470,375 520,375 545,420 520,465 470,465 445,420" fill="var(--algo)" stroke="var(--algo-line)" stroke-width="1.8"/>
+          <text x="495" y="415" text-anchor="middle" font-size="10.5" font-weight="700">Isolation</text>
+          <text x="495" y="428" text-anchor="middle" font-size="10.5" font-weight="700">Forest</text>
+        </g>
+
+        <!-- AG -> Algorithm performs -->
+        <line x1="305" y1="95" x2="445" y2="90" stroke="currentColor" stroke-width="1.2"/>
+        <line x1="305" y1="100" x2="445" y2="200" stroke="currentColor" stroke-width="1.2"/>
+        <line x1="305" y1="105" x2="445" y2="310" stroke="currentColor" stroke-width="1.2"/>
+        <line x1="305" y1="110" x2="445" y2="420" stroke="currentColor" stroke-width="1.2"/>
+        <text x="330" y="150" font-size="9" font-style="italic">performs</text>
+
+        <!-- Softgoals (clouds approximated as rounded rects) -->
+        <g fill="var(--soft)" stroke="var(--soft-line)" stroke-width="1.8">
+          <rect x="760" y="30" width="190" height="56" rx="26"/>
+          <rect x="760" y="130" width="190" height="56" rx="26"/>
+          <rect x="760" y="230" width="190" height="56" rx="26"/>
+          <rect x="760" y="330" width="190" height="56" rx="26"/>
+          <rect x="760" y="430" width="190" height="56" rx="26"/>
+        </g>
+        <g font-size="10.5" font-weight="700" text-anchor="middle">
+          <text x="855" y="54">Detection accuracy</text>
+          <text x="855" y="68">(imbalanced data)</text>
+          <text x="855" y="154">Low inference</text>
+          <text x="855" y="168">latency</text>
+          <text x="855" y="254">Interpretability</text>
+          <text x="855" y="354">Tolerance to missing</text>
+          <text x="855" y="368">values</text>
+          <text x="855" y="454">Adaptability to</text>
+          <text x="855" y="468">drift (cheap retrain)</text>
+        </g>
+
+        <!-- influence lines LightGBM (champion) to softgoals: positive solid, negative dashed -->
+        <g stroke-width="1.3" fill="none">
+          <path d="M545,290 C650,250 700,220 760,145" stroke="#2f8f52" stroke-dasharray="0" marker-end="url(#arrSolid)"/>
+          <text x="640" y="220" font-size="9.5" fill="#2f8f52" font-weight="700">++</text>
+          <path d="M545,300 C650,170 700,100 760,58" stroke="#2f8f52" marker-end="url(#arrSolid)"/>
+          <text x="660" y="130" font-size="9.5" fill="#2f8f52" font-weight="700">+</text>
+          <path d="M545,308 C650,300 700,290 760,260" stroke="#c0392b" stroke-dasharray="4,3" marker-end="url(#arrSolid)"/>
+          <text x="660" y="300" font-size="9.5" fill="#c0392b" font-weight="700">&#8722;</text>
+          <path d="M545,320 C650,350 700,355 760,358" stroke="#2f8f52" marker-end="url(#arrSolid)"/>
+          <text x="660" y="355" font-size="9.5" fill="#2f8f52" font-weight="700">++</text>
+          <path d="M545,330 C650,400 700,430 760,450" stroke="#2f8f52" marker-end="url(#arrSolid)"/>
+          <text x="660" y="420" font-size="9.5" fill="#2f8f52" font-weight="700">+</text>
+        </g>
+
+        <!-- LR influence (dashed grey, for contrast) -->
+        <g stroke-width="1.1" fill="none" opacity="0.55">
+          <path d="M545,90 C650,70 700,60 760,58" stroke="currentColor" marker-end="url(#arrSolid)"/>
+          <text x="600" y="68" font-size="9" font-style="italic">LR: + latency, &#8722; accuracy</text>
+        </g>
+
+        <!-- satisfied / denied marks -->
+        <text x="565" y="300" font-size="16" fill="#2f8f52">&#10003;</text>
+        <text x="565" y="90" font-size="16" fill="var(--accent)">&#10007;</text>
+        <text x="565" y="420" font-size="16" fill="var(--accent)">&#10007;</text>
+
+        <!-- Legend -->
+        <g transform="translate(20,480)" font-size="10">
+          <text font-weight="700" font-size="11">Legend:</text>
+          <polygon points="95,2 115,2 125,14 115,26 95,26 85,14" fill="var(--algo)" stroke="var(--algo-line)"/>
+          <text x="135" y="18">Algorithm</text>
+          <ellipse cx="240" cy="14" rx="20" ry="10" fill="var(--question)" stroke="var(--question-line)"/>
+          <text x="268" y="18">Analytics Goal</text>
+          <rect x="360" y="2" width="56" height="22" rx="11" fill="var(--soft)" stroke="var(--soft-line)"/>
+          <text x="424" y="18">Softgoal</text>
+          <text x="500" y="18" fill="#2f8f52" font-weight="700">++/+ positive influence</text>
+          <text x="700" y="18" fill="var(--accent)" font-weight="700">&#8722;/&#8722;&#8722; negative</text>
+          <text x="880" y="18">&#10003; satisfied &#160; &#10007; denied</text>
+        </g>
+      </svg>
+      <figcaption>Analytics Design View — three candidate algorithms (Logistic Regression, Random Forest, Isolation Forest) and LightGBM (the registered champion), with their influence on four softgoals matching the quality attributes in Section 4.</figcaption>
+    </figure>
+
+    <table class="elements">
+      <tr><th>Element</th><th>Instances in this system</th></tr>
+      <tr><td>Analytics Goal</td><td>AG1 Classification (Prediction) · AG2 Triage policy (Prescription) · AG3 Explanation (Description)</td></tr>
+      <tr><td>Algorithm</td><td>Logistic Regression, Random Forest, Isolation Forest, <strong>LightGBM (champion)</strong></td></tr>
+      <tr><td>Softgoal</td><td>Detection accuracy, Low inference latency, Interpretability, Tolerance to missing values, Adaptability to drift</td></tr>
+      <tr><td>Satisfied / Denied</td><td>LightGBM ✓ (PR-AUC 0.9997, 0.4ms/row) · Logistic Regression ✗ (lower accuracy) · Isolation Forest ✗ (weaker without labels)</td></tr>
+    </table>
+  </section>
+
+  <!-- ======================= DATA PREPARATION VIEW ======================= -->
+  <section class="view" id="dataprep">
+    <h2>Data Preparation View <span class="tag">How?</span></h2>
+    <p class="dsc">Source entities, the operators that clean/join/derive the training table, and the output entity — matching training/build_features.py exactly.</p>
+    <figure class="svg-frame">
+      <svg viewBox="0 0 1240 420" role="img" aria-label="Data Preparation View: PaySimTransaction entity flows through filter, leakage-removal, windowed aggregation, derive, encode and split operators into the TrainingFeatureTable output entity.">
+        <!-- Source entity -->
+        <rect x="20" y="40" width="220" height="200" fill="var(--entity)" stroke="currentColor" stroke-width="1.6"/>
+        <text x="130" y="60" text-anchor="middle" font-size="12" font-weight="700">PaySimTransaction</text>
+        <line x1="20" y1="70" x2="240" y2="70" stroke="currentColor" stroke-width="1.2"/>
+        <g font-size="10" font-family="JetBrains Mono, monospace">
+          <text x="32" y="88" font-weight="700">txn_id (PK)</text>
+          <text x="32" y="104">step, type, amount</text>
+          <text x="32" y="120">nameOrig, oldbalanceOrg</text>
+          <text x="32" y="136">nameDest, oldbalanceDest</text>
+          <text x="32" y="152" fill="var(--accent)">newbalanceOrig (dropped)</text>
+          <text x="32" y="168" fill="var(--accent)">newbalanceDest (dropped)</text>
+          <text x="32" y="184">isFraud</text>
+          <text x="32" y="200" fill="var(--accent)">isFlaggedFraud (baseline only)</text>
+        </g>
+
+        <!-- Operators chain -->
+        <g font-size="10.5" font-weight="700" text-anchor="middle">
+          <rect x="280" y="50" width="130" height="46" fill="var(--surface)" stroke="currentColor" stroke-width="1.6"/>
+          <text x="345" y="70">Filter</text>
+          <text x="345" y="84" font-size="8.5" font-weight="400" class="soft-text">type IN (TRANSFER,</text>
+          <text x="345" y="94" font-size="8.5" font-weight="400" class="soft-text">CASH_OUT)</text>
+
+          <rect x="280" y="112" width="130" height="46" fill="var(--surface)" stroke="var(--accent)" stroke-width="1.8"/>
+          <text x="345" y="132">Leakage removal</text>
+          <text x="345" y="146" font-size="8.5" font-weight="400" class="soft-text">drop post-txn balances</text>
+
+          <rect x="280" y="174" width="130" height="46" fill="var(--surface)" stroke="currentColor" stroke-width="1.6"/>
+          <text x="345" y="194">Clean</text>
+          <text x="345" y="208" font-size="8.5" font-weight="400" class="soft-text">dedupe, validate</text>
+
+          <rect x="470" y="50" width="150" height="56" fill="var(--surface)" stroke="currentColor" stroke-width="1.6"/>
+          <text x="545" y="70">Windowed</text>
+          <text x="545" y="84">aggregation</text>
+          <text x="545" y="98" font-size="8.5" font-weight="400" class="soft-text">24h receiver velocity</text>
+
+          <rect x="470" y="120" width="150" height="56" fill="var(--surface)" stroke="currentColor" stroke-width="1.6"/>
+          <text x="545" y="140">Derive</text>
+          <text x="545" y="154" font-size="8.5" font-weight="400" class="soft-text">drains_account, is_night,</text>
+          <text x="545" y="166" font-size="8.5" font-weight="400" class="soft-text">amount_to_balance_ratio</text>
+
+          <rect x="470" y="190" width="150" height="46" fill="var(--surface)" stroke="currentColor" stroke-width="1.6"/>
+          <text x="545" y="210">Encode</text>
+          <text x="545" y="224" font-size="8.5" font-weight="400" class="soft-text">one-hot type</text>
+
+          <rect x="680" y="90" width="150" height="46" fill="var(--surface)" stroke="currentColor" stroke-width="1.6"/>
+          <text x="755" y="110">Split</text>
+          <text x="755" y="124" font-size="8.5" font-weight="400" class="soft-text">time-based on step</text>
+
+          <rect x="680" y="150" width="150" height="46" fill="var(--surface)" stroke="currentColor" stroke-width="1.6"/>
+          <text x="755" y="170">Imbalance handling</text>
+          <text x="755" y="184" font-size="8.5" font-weight="400" class="soft-text">scale_pos_weight</text>
+        </g>
+
+        <!-- flow arrows -->
+        <g stroke="currentColor" stroke-width="1.3" marker-end="url(#arrSolid)">
+          <line x1="240" y1="73" x2="280" y2="73"/>
+          <line x1="345" y1="96" x2="345" y2="112"/>
+          <line x1="345" y1="158" x2="345" y2="174"/>
+          <line x1="410" y1="80" x2="470" y2="78"/>
+          <line x1="545" y1="106" x2="545" y2="120"/>
+          <line x1="545" y1="176" x2="545" y2="190"/>
+          <line x1="620" y1="213" x2="680" y2="155"/>
+          <line x1="620" y1="78" x2="680" y2="113"/>
+          <line x1="755" y1="136" x2="755" y2="150"/>
+          <line x1="830" y1="113" x2="900" y2="113"/>
+        </g>
+
+        <!-- Output entity -->
+        <rect x="900" y="60" width="300" height="190" fill="var(--entity)" stroke="currentColor" stroke-width="2"/>
+        <text x="1050" y="82" text-anchor="middle" font-size="12" font-weight="700">TrainingFeatureTable</text>
+        <line x1="900" y1="92" x2="1200" y2="92" stroke="currentColor" stroke-width="1.2"/>
+        <g font-size="10" font-family="JetBrains Mono, monospace">
+          <text x="912" y="110" font-weight="700">txn_id (PK)</text>
+          <text x="912" y="126">13 pre-transaction features</text>
+          <text x="912" y="142">(see common/features.py)</text>
+          <text x="912" y="162">isFraud (label)</text>
+          <text x="912" y="182">split: train / valid / test</text>
+          <text x="912" y="202">(steps 1-500/501-600/601-743)</text>
+        </g>
+
+        <!-- Note -->
+        <g transform="translate(280,260)">
+          <path d="M0,0 L380,0 L380,96 L18,96 L0,78 Z" fill="var(--bg)" stroke="var(--line-soft)"/>
+          <path d="M0,78 L18,78 L18,96 Z" fill="var(--line-soft)"/>
+          <text x="14" y="20" font-size="10.5" font-weight="700">Note</text>
+          <text x="14" y="38" font-size="9.5">Point-in-time correctness: 24h velocity counts only</text>
+          <text x="14" y="52" font-size="9.5">payments that happened BEFORE the current row.</text>
+          <text x="14" y="66" font-size="9.5">The same compute_features() runs in training and in</text>
+          <text x="14" y="80" font-size="9.5">scoring-service — proven equal by tests/test_features_parity.py.</text>
+        </g>
+      </svg>
+      <figcaption>Data Preparation View — PaySimTransaction flows through filter, leakage-removal, windowed aggregation, derive, encode, split and imbalance-handling operators into the TrainingFeatureTable used for training and the identical feature path used at serving time.</figcaption>
+    </figure>
+
+    <table class="elements">
+      <tr><th>Element</th><th>Instances in this system</th></tr>
+      <tr><td>Entity (source)</td><td>PaySimTransaction (step, type, amount, nameOrig, oldbalanceOrg, nameDest, oldbalanceDest, isFraud)</td></tr>
+      <tr><td>Entity (output)</td><td>TrainingFeatureTable (txn_id, 13 features, isFraud)</td></tr>
+      <tr><td>Operator</td><td>Filter · Leakage removal · Clean · Windowed aggregation · Derive · Encode · Split · Imbalance handling</td></tr>
+      <tr><td>Note</td><td>Point-in-time correctness; shared feature function between training and serving (no train/serve skew)</td></tr>
+    </table>
+  </section>
+
+  <!-- ======================= SYSTEM ARCHITECTURE ======================= -->
+  <section class="view" id="architecture">
+    <h2>System Architecture</h2>
+    <p class="dsc">ML components (blue) and non-ML components (amber) connected by synchronous calls (solid arrows) and the asynchronous event bus (dashed, purple). Matches docker-compose.yml exactly.</p>
+    <figure class="svg-frame">
+      <svg viewBox="0 0 1240 660" role="img" aria-label="Architecture diagram: a gateway and console call the ML scoring service synchronously; the gateway publishes decisions to a Redis event bus consumed by three independent non-ML services; an offline training pipeline registers models to MLflow which the scoring service reads.">
+        <defs>
+          <marker id="arrSync" markerWidth="9" markerHeight="9" refX="8" refY="3" orient="auto">
+            <path d="M0,0 L0,6 L8,3 z" fill="currentColor"/>
+          </marker>
+          <marker id="arrEvent" markerWidth="9" markerHeight="9" refX="8" refY="3" orient="auto">
+            <path d="M0,0 L0,6 L8,3 z" fill="var(--event-line)"/>
+          </marker>
+        </defs>
+
+        <!-- Console (non-ML) -->
+        <rect x="30" y="40" width="190" height="60" rx="8" fill="var(--nonml)" stroke="var(--nonml-line)" stroke-width="1.8"/>
+        <text x="125" y="65" text-anchor="middle" font-size="12" font-weight="700">Analyst Console</text>
+        <text x="125" y="82" text-anchor="middle" font-size="10" class="soft-text">Streamlit :8501</text>
+
+        <!-- triage-api (non-ML) -->
+        <rect x="320" y="40" width="230" height="110" rx="8" fill="var(--nonml)" stroke="var(--nonml-line)" stroke-width="1.8"/>
+        <text x="435" y="64" text-anchor="middle" font-size="12" font-weight="700">triage-api :8000</text>
+        <text x="435" y="80" text-anchor="middle" font-size="9.5" class="soft-text">Gateway + Orchestrator</text>
+        <text x="435" y="96" text-anchor="middle" font-size="9" class="soft-text">auth · hard rules · heartbeat</text>
+        <text x="435" y="110" text-anchor="middle" font-size="9" class="soft-text">cost-based policy · publish</text>
+        <text x="435" y="136" text-anchor="middle" font-size="9" fill="var(--nonml-line)" font-weight="700">non-ML</text>
+
+        <!-- scoring (ML) -->
+        <rect x="320" y="200" width="230" height="110" rx="8" fill="var(--ml)" stroke="var(--ml-line)" stroke-width="1.8"/>
+        <text x="435" y="224" text-anchor="middle" font-size="12" font-weight="700">scoring :8001</text>
+        <text x="435" y="240" text-anchor="middle" font-size="9.5" class="soft-text">pipe-and-filter</text>
+        <text x="435" y="256" text-anchor="middle" font-size="9" class="soft-text">validate &#8594; features &#8594;</text>
+        <text x="435" y="270" text-anchor="middle" font-size="9" class="soft-text">predict &#8594; SHAP explain</text>
+        <text x="435" y="296" text-anchor="middle" font-size="9" fill="var(--ml-line)" font-weight="700">ML</text>
+
+        <!-- Online Feature Store -->
+        <rect x="620" y="200" width="190" height="60" rx="8" fill="var(--ml)" stroke="var(--ml-line)" stroke-width="1.8"/>
+        <text x="715" y="224" text-anchor="middle" font-size="11.5" font-weight="700">Online Feature Store</text>
+        <text x="715" y="240" text-anchor="middle" font-size="9.5" class="soft-text">Redis sorted sets (24h)</text>
+        <text x="715" y="253" text-anchor="middle" font-size="9" fill="var(--ml-line)" font-weight="700">ML</text>
+
+        <!-- MLflow -->
+        <rect x="620" y="40" width="190" height="60" rx="8" fill="var(--ml)" stroke="var(--ml-line)" stroke-width="1.8"/>
+        <text x="715" y="64" text-anchor="middle" font-size="11.5" font-weight="700">MLflow Registry</text>
+        <text x="715" y="80" text-anchor="middle" font-size="9.5" class="soft-text">tracking + model registry</text>
+        <text x="715" y="93" text-anchor="middle" font-size="9" fill="var(--ml-line)" font-weight="700">ML</text>
+
+        <!-- Event bus -->
+        <rect x="320" y="360" width="560" height="56" rx="8" fill="var(--event)" stroke="var(--event-line)" stroke-width="1.8"/>
+        <text x="600" y="383" text-anchor="middle" font-size="12" font-weight="700">Redis Streams — payment.decided</text>
+        <text x="600" y="399" text-anchor="middle" font-size="9.5" class="soft-text">consumer groups, at-least-once delivery, XAUTOCLAIM replay</text>
+
+        <!-- Consumers (non-ML) -->
+        <rect x="50" y="460" width="190" height="70" rx="8" fill="var(--nonml)" stroke="var(--nonml-line)" stroke-width="1.8"/>
+        <text x="145" y="485" text-anchor="middle" font-size="11.5" font-weight="700">case-service :8002</text>
+        <text x="145" y="501" text-anchor="middle" font-size="9" class="soft-text">opens/resolves cases</text>
+        <text x="145" y="515" text-anchor="middle" font-size="9" class="soft-text">(FR5, FR6 feedback loop)</text>
+
+        <rect x="300" y="460" width="190" height="70" rx="8" fill="var(--ml)" stroke="var(--ml-line)" stroke-width="1.8"/>
+        <text x="395" y="485" text-anchor="middle" font-size="11.5" font-weight="700">feature-updater</text>
+        <text x="395" y="501" text-anchor="middle" font-size="9" class="soft-text">writes velocity state</text>
+        <text x="395" y="515" text-anchor="middle" font-size="9" class="soft-text">(FR7)</text>
+
+        <rect x="550" y="460" width="190" height="70" rx="8" fill="var(--nonml)" stroke="var(--nonml-line)" stroke-width="1.8"/>
+        <text x="645" y="485" text-anchor="middle" font-size="11.5" font-weight="700">monitor :8003</text>
+        <text x="645" y="501" text-anchor="middle" font-size="9" class="soft-text">PSI drift, decision mix,</text>
+        <text x="645" y="515" text-anchor="middle" font-size="9" class="soft-text">latency (FR8)</text>
+
+        <!-- Offline training pipeline -->
+        <rect x="900" y="40" width="300" height="270" rx="8" fill="var(--surface)" stroke="var(--line-soft)" stroke-width="1.6" stroke-dasharray="5,4"/>
+        <text x="1050" y="62" text-anchor="middle" font-size="11.5" font-weight="700">Offline Training Pipeline</text>
+        <g font-size="9.5" text-anchor="middle" class="soft-text">
+          <text x="1050" y="85">PaySim CSV</text>
+        </g>
+        <line x1="1050" y1="92" x2="1050" y2="108" stroke="currentColor" stroke-width="1.2" marker-end="url(#arrSync)"/>
+        <rect x="940" y="110" width="220" height="34" fill="var(--bg)" stroke="currentColor" stroke-width="1.2"/>
+        <text x="1050" y="131" text-anchor="middle" font-size="10">build_features.py</text>
+        <line x1="1050" y1="144" x2="1050" y2="158" stroke="currentColor" stroke-width="1.2" marker-end="url(#arrSync)"/>
+        <rect x="940" y="160" width="220" height="34" fill="var(--bg)" stroke="currentColor" stroke-width="1.2"/>
+        <text x="1050" y="181" text-anchor="middle" font-size="10">train.py (LR / RF / LightGBM)</text>
+        <line x1="1050" y1="194" x2="1050" y2="208" stroke="currentColor" stroke-width="1.2" marker-end="url(#arrSync)"/>
+        <rect x="940" y="210" width="220" height="34" fill="var(--bg)" stroke="currentColor" stroke-width="1.2"/>
+        <text x="1050" y="231" text-anchor="middle" font-size="10">select_thresholds.py</text>
+        <line x1="1050" y1="244" x2="1050" y2="258" stroke="currentColor" stroke-width="1.2" marker-end="url(#arrSync)"/>
+        <rect x="940" y="260" width="220" height="34" fill="var(--bg)" stroke="currentColor" stroke-width="1.2"/>
+        <text x="1050" y="281" text-anchor="middle" font-size="10">register.py &#8594; quality gate</text>
+
+        <!-- sync arrows -->
+        <g stroke="currentColor" stroke-width="1.4" marker-end="url(#arrSync)" fill="none">
+          <line x1="220" y1="70" x2="320" y2="70"/>
+          <line x1="435" y1="150" x2="435" y2="200"/>
+          <line x1="550" y1="255" x2="620" y2="230"/>
+          <line x1="550" y1="85" x2="620" y2="70"/>
+        </g>
+        <text x="235" y="63" font-size="9" font-style="italic">HTTP</text>
+        <text x="440" y="178" font-size="9" font-style="italic">HTTP (100ms timeout)</text>
+        <text x="555" y="215" font-size="9" font-style="italic">read/write</text>
+        <text x="555" y="63" font-size="9" font-style="italic">load champion</text>
+
+        <!-- registry arrow from pipeline to mlflow -->
+        <path d="M940,277 C860,277 820,70 810,70" fill="none" stroke="currentColor" stroke-width="1.4" marker-end="url(#arrSync)"/>
+        <text x="845" y="200" font-size="9" font-style="italic" transform="rotate(-90,845,200)">register champion</text>
+
+        <!-- event publish (dashed, purple) -->
+        <path d="M435,150 C435,300 435,340 435,360" fill="none" stroke="var(--event-line)" stroke-width="1.6" stroke-dasharray="5,4" marker-end="url(#arrEvent)"/>
+        <text x="450" y="340" font-size="9.5" fill="var(--event-line)" font-style="italic">publish</text>
+
+        <!-- event -> consumers (dashed) -->
+        <g stroke="var(--event-line)" stroke-width="1.5" stroke-dasharray="5,4" fill="none" marker-end="url(#arrEvent)">
+          <path d="M400,416 C300,440 200,445 145,460"/>
+          <path d="M500,416 C460,430 420,445 395,460"/>
+          <path d="M700,416 C680,430 660,445 645,460"/>
+        </g>
+
+        <!-- console -> triage-api -->
+        <path d="M220,70 L320,70" fill="none"/>
+
+        <!-- Legend -->
+        <g transform="translate(900,330)" font-size="10.5">
+          <rect width="300" height="140" rx="6" fill="var(--bg)" stroke="var(--line-soft)"/>
+          <text x="150" y="20" text-anchor="middle" font-weight="700" font-size="12">Legend</text>
+          <rect x="14" y="32" width="24" height="16" fill="var(--ml)" stroke="var(--ml-line)"/>
+          <text x="46" y="44">ML component</text>
+          <rect x="14" y="54" width="24" height="16" fill="var(--nonml)" stroke="var(--nonml-line)"/>
+          <text x="46" y="66">non-ML component</text>
+          <rect x="14" y="76" width="24" height="16" fill="var(--event)" stroke="var(--event-line)"/>
+          <text x="46" y="88">Event bus</text>
+          <line x1="14" y1="104" x2="38" y2="104" stroke="currentColor" stroke-width="1.4" marker-end="url(#arrSync)"/>
+          <text x="46" y="108">synchronous call</text>
+          <line x1="14" y1="122" x2="38" y2="122" stroke="var(--event-line)" stroke-width="1.6" stroke-dasharray="5,4" marker-end="url(#arrEvent)"/>
+          <text x="46" y="126">async event (pub-sub)</text>
+        </g>
+      </svg>
+      <figcaption>System architecture — ML components (scoring, feature store, MLflow registry, training pipeline) in blue; non-ML components (gateway, console, case service, monitor) in amber; synchronous calls as solid arrows, the Redis Streams event bus as dashed purple arrows.</figcaption>
+    </figure>
+
+    <table class="elements">
+      <tr><th>Component</th><th>ML / non-ML</th><th>Responsibility</th></tr>
+      <tr><td>triage-api</td><td>non-ML</td><td>Auth, hard rules, heartbeat-gated scorer call, cost policy, publishes decisions</td></tr>
+      <tr><td>scoring</td><td>ML</td><td>Pipe-and-filter inference: validate &#8594; features &#8594; predict &#8594; SHAP explain</td></tr>
+      <tr><td>Online Feature Store (Redis)</td><td>ML</td><td>24h receiver velocity, read before score, written after decision</td></tr>
+      <tr><td>MLflow Registry</td><td>ML</td><td>Experiment tracking, model versioning, champion alias</td></tr>
+      <tr><td>case-service</td><td>non-ML</td><td>Opens/lists/resolves analyst cases; verdicts become labels</td></tr>
+      <tr><td>feature-updater</td><td>non-ML (consumer)</td><td>Writes velocity state asynchronously so it never adds request latency</td></tr>
+      <tr><td>monitor</td><td>non-ML</td><td>PSI drift, decision mix, p95 latency, alerts</td></tr>
+      <tr><td>Analyst Console</td><td>non-ML</td><td>Streamlit UI: simulate payments, work the case queue, view metrics</td></tr>
+    </table>
+  </section>
+
+  <footer class="note">Group 13 · AIMLZG546 Assignment I · diagrams generated to match the exact code in training/ and services/</footer>
+</div>
