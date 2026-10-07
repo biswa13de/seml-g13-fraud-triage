@@ -13,9 +13,6 @@ import time
 from pathlib import Path
 
 import lightgbm as lgb
-import matplotlib
-
-matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import mlflow
 import numpy as np
@@ -171,4 +168,10 @@ def main() -> None:
 
 
 if __name__ == "__main__":
+    # Force a headless backend only for a standalone CLI run (no display to draw
+    # to); importing this module into an already-running kernel (e.g. a notebook)
+    # must never override that kernel's own matplotlib backend as a side effect.
+    import matplotlib
+
+    matplotlib.use("Agg")
     main()

@@ -86,10 +86,24 @@ make run-local
 
 ## Notebook
 
-`13.ipynb` walks through the dataset, EDA, the 3-model MLflow comparison, the cost-based
-thresholds, SHAP explainability, and finally calls the **live running system** for three scenario
-payments. With `redis` and `mlflow` up and a champion registered (`make train`), open it with:
+`13.ipynb` walks through the dataset, EDA, feature engineering, trains and compares the 3 models
+**inline**, picks cost-based thresholds, runs SHAP explainability, and (when available) calls the
+live running system for three scenario payments.
+
+**Runs on Google Colab**, top to bottom, with no setup beyond a Kaggle API token: Section 0 clones
+this repository and installs dependencies, Section 2 downloads PaySim (prompting for `kaggle.json`
+if needed), and Section 5 trains all three models against a local, file-based MLflow store —
+there's no dependency on this project's Docker stack. Section 9 (calling the live system) detects
+whether `http://localhost:8000` is reachable and skips itself automatically when it isn't (which is
+always the case on Colab, since it's a separate machine from the one running our containers).
+
+**Runs locally** too, either from a fresh clone (same as Colab) or against this project's own
+checkout — it detects which, and skips the clone/download steps if already present:
 ```bash
+pip install -r requirements.txt
 jupyter notebook 13.ipynb
 ```
-The Section 10 cells (live API calls) additionally need the full stack up (`docker compose up -d`).
+Run `docker compose up -d` first if you also want Section 9's live calls to succeed.
+
+The notebook is generated from `docs/build_notebook.py` (`python docs/build_notebook.py` writes
+`13.ipynb`); edit that script, not the notebook file, if changes are needed.
