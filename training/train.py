@@ -9,7 +9,6 @@ Algorithms (mirrors the Analytics Design View's softgoal trade-off):
 
 Usage: python -m training.train
 """
-import json
 import time
 from pathlib import Path
 
@@ -26,6 +25,7 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import average_precision_score, precision_recall_curve, roc_auc_score
 from sklearn.preprocessing import StandardScaler
 
+from common.config import settings
 from common.features import FEATURE_NAMES
 
 DATA_DIR = Path("data")
@@ -149,7 +149,7 @@ def train_lightgbm(X_train, y_train, X_valid, y_valid, X_test, y_test):
 
 
 def main() -> None:
-    mlflow.set_tracking_uri("sqlite:///mlflow.db")
+    mlflow.set_tracking_uri(settings.mlflow_tracking_uri)
     mlflow.set_experiment(EXPERIMENT)
 
     X_train, y_train = load_split("train")

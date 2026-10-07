@@ -29,6 +29,56 @@ Kaggle [PaySim](https://www.kaggle.com/datasets/ealaxi/paysim1), a public simula
    python data/download_paysim.py
    ```
 
-## Running
+## Architecture
 
-Instructions will be added as the services are built (Docker Compose, or `make run-local` without Docker).
+```
+Payment App/Console → triage-api (gateway: rules, heartbeat, policy) → scoring (ML: pipe-and-filter + SHAP)
+                              │                                              │
+                              └──────────── publish payment.decided ────────┘
+                                         (Redis Streams, pub-sub)
+                                    ↓              ↓              ↓
+                              case-service   feature-updater   monitor
+```
+Patterns: **Microservices** (independently deployable/scalable services) + **Event-Driven Architecture**
+(Redis Streams pub-sub). Full design in [PLAN.md](PLAN.md).
+
+## Running (Docker — primary path)
+
+```bash
+docker compose up -d redis mlflow        # 1. bring up infra first
+make train                               # 2. train 3 models, pick cost-based thresholds, register champion
+docker compose up -d --build             # 3. bring up every service
+```
+
+- Gateway: http://localhost:8000/docs (header `X-API-Key: demo-key-g13`)
+- Analyst console: http://localhost:8501
+- Case service: http://localhost:8002/cases
+- Monitoring: http://localhost:8003/metrics
+- MLflow UI: http://localhost:5000
+
+Scale the hot path independently (Microservices pattern demo):
+```bash
+docker compose up -d --scale scoring=2 scoring
+```
+
+Simulate the fallback tactic (Event-Driven + heartbeat demo):
+```bash
+docker compose stop scoring   # triage-api keeps answering, degraded=true, rules-only
+docker compose start scoring  # heartbeat self-heals within ~2-6s, no restart needed
+```
+
+Run the full QA test suite and the latency load test:
+```bash
+make test     # needs `docker compose up -d mlflow` for model-quality tests; the rest run with zero infra
+make load     # needs the full stack up; checks QA1 (p95<=150ms, p99<=300ms)
+```
+
+## Running without Docker
+
+```bash
+brew install redis && redis-server &
+mlflow server --host 0.0.0.0 --port 5000 --backend-store-uri sqlite:///mlflow.db \
+  --artifacts-destination ./mlruns --serve-artifacts &
+make train
+make run-local
+```

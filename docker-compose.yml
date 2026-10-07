@@ -1,0 +1,123 @@
+services:
+  redis:
+    image: redis:7-alpine
+    ports: ["6379:6379"]
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 3s
+      timeout: 2s
+      retries: 10
+
+  # MLflow runs as its own server (Model Registry pattern) so every client
+  # (training, register, scoring) resolves artifact paths relative to the
+  # SERVER's own filesystem, not the caller's CWD. A plain `sqlite:///` file
+  # store shared over a bind mount bakes in absolute host paths and breaks
+  # the moment a container reads it, so the server is the fix, not a mount.
+  mlflow:
+    build: .
+    # --allowed-hosts: MLflow 3.x's dev server rejects any Host header it
+    # doesn't recognise (DNS-rebinding protection), which by default means
+    # only "localhost" -- so other containers calling it as "mlflow:5000"
+    # get a 403. We allowlist the compose service name explicitly instead
+    # of disabling the protection with '*'.
+    command: >
+      mlflow server --host 0.0.0.0 --port 5000
+      --backend-store-uri sqlite:///mlflow.db
+      --artifacts-destination /app/mlruns
+      --serve-artifacts
+      --allowed-hosts "localhost,localhost:*,127.0.0.1,127.0.0.1:*,mlflow,mlflow:*"
+    volumes:
+      - mlflow_data:/app/mlruns
+      - mlflow_db:/app/mlflow_store
+    working_dir: /app/mlflow_store
+    ports: ["5000:5000"]
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/health"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  # scoring-service is the ML component: loads the champion model from the
+  # MLflow registry and serves /score. Scale it independently of everything
+  # else: docker compose up --scale scoring=2
+  scoring:
+    build: .
+    command: uvicorn services.scoring.main:app --host 0.0.0.0 --port 8001
+    environment:
+      - REDIS_URL=redis://redis:6379/0
+      - MLFLOW_TRACKING_URI=http://mlflow:5000
+    depends_on:
+      redis: { condition: service_healthy }
+      mlflow: { condition: service_healthy }
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8001/health"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    expose: ["8001"]
+
+  # triage-api is the gateway: rules, heartbeat, policy, and the one
+  # service exposed to the outside world (the payment app / console call it).
+  triage-api:
+    build: .
+    command: uvicorn services.triage_api.main:app --host 0.0.0.0 --port 8000
+    environment:
+      - REDIS_URL=redis://redis:6379/0
+      - SCORING_SERVICE_URL=http://scoring:8001
+    depends_on:
+      redis: { condition: service_healthy }
+      scoring: { condition: service_healthy }
+    ports: ["8000:8000"]
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  case-service:
+    build: .
+    command: uvicorn services.case_service.main:app --host 0.0.0.0 --port 8002
+    environment:
+      - REDIS_URL=redis://redis:6379/0
+    depends_on:
+      redis: { condition: service_healthy }
+    volumes:
+      - case_data:/app/data_runtime
+    ports: ["8002:8002"]
+
+  feature-updater:
+    build: .
+    command: python -m services.feature_updater.main
+    environment:
+      - REDIS_URL=redis://redis:6379/0
+    depends_on:
+      redis: { condition: service_healthy }
+
+  monitor:
+    build: .
+    command: uvicorn services.monitor.main:app --host 0.0.0.0 --port 8003
+    environment:
+      - REDIS_URL=redis://redis:6379/0
+      - MLFLOW_TRACKING_URI=http://mlflow:5000
+    depends_on:
+      redis: { condition: service_healthy }
+      mlflow: { condition: service_healthy }
+    ports: ["8003:8003"]
+
+  console:
+    build: .
+    command: streamlit run console/app.py --server.port 8501 --server.address 0.0.0.0
+    environment:
+      - TRIAGE_API_URL=http://triage-api:8000
+      - CASE_SERVICE_URL=http://case-service:8002
+      - MONITOR_URL=http://monitor:8003
+    depends_on:
+      - triage-api
+      - case-service
+      - monitor
+    ports: ["8501:8501"]
+
+volumes:
+  case_data:
+  mlflow_data:
+  mlflow_db:

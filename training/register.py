@@ -10,10 +10,9 @@ import sys
 from pathlib import Path
 
 import mlflow
-import pandas as pd
 from mlflow import MlflowClient
 
-from common.features import FEATURE_NAMES
+from common.config import settings
 from training.select_thresholds import latest_run_id
 
 MODEL_NAME = "fraud-triage-model"
@@ -30,7 +29,7 @@ def main() -> None:
     parser.add_argument("--run-id", default=None)
     args = parser.parse_args()
 
-    mlflow.set_tracking_uri("sqlite:///mlflow.db")
+    mlflow.set_tracking_uri(settings.mlflow_tracking_uri)
     client = MlflowClient()
     run_id = args.run_id or latest_run_id("lightgbm")
     run = client.get_run(run_id)

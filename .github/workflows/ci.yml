@@ -1,0 +1,49 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  lint-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Lint (ruff)
+        run: ruff check . --select F,E9
+
+      - name: Build features from a tiny fixture dataset
+        run: |
+          mkdir -p data
+          python - <<'PY'
+          import pandas as pd, numpy as np
+          np.random.seed(13)
+          n = 5000
+          df = pd.DataFrame({
+              "step": np.sort(np.random.randint(1, 743, n)),
+              "type": np.random.choice(["TRANSFER", "CASH_OUT", "PAYMENT"], n, p=[0.3, 0.3, 0.4]),
+              "amount": np.random.exponential(5000, n),
+              "nameOrig": [f"C{i}" for i in np.random.randint(0, 2000, n)],
+              "oldbalanceOrg": np.random.exponential(10000, n),
+              "newbalanceOrig": np.random.exponential(10000, n),
+              "nameDest": [f"C{i}" for i in np.random.randint(0, 1000, n)],
+              "oldbalanceDest": np.random.exponential(8000, n),
+              "newbalanceDest": np.random.exponential(8000, n),
+              "isFraud": np.random.choice([0, 1], n, p=[0.98, 0.02]),
+              "isFlaggedFraud": 0,
+          })
+          df.to_csv("data/paysim.csv", index=False)
+          PY
+          python -m training.build_features
+
+      - name: Run tests (model-quality tests skip without a registered model)
+        run: pytest tests/ -v -k "not quality_model and not quality_explainability"

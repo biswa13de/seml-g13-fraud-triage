@@ -23,6 +23,7 @@ import mlflow
 import numpy as np
 import pandas as pd
 
+from common.config import settings
 from common.features import FEATURE_NAMES
 
 DATA_DIR = Path("data")
@@ -34,7 +35,7 @@ COST_STEPUP_RESIDUAL_FRACTION = 0.20  # fraction of a STEP_UPed fraud still assu
 
 
 def latest_run_id(run_name: str) -> str:
-    mlflow.set_tracking_uri("sqlite:///mlflow.db")
+    mlflow.set_tracking_uri(settings.mlflow_tracking_uri)
     runs = mlflow.search_runs(
         experiment_names=["fraud-triage"],
         filter_string=f"tags.mlflow.runName = '{run_name}'",
@@ -80,7 +81,7 @@ def main() -> None:
     parser.add_argument("--run-id", default=None, help="MLflow run id; defaults to latest lightgbm run")
     args = parser.parse_args()
 
-    mlflow.set_tracking_uri("sqlite:///mlflow.db")
+    mlflow.set_tracking_uri(settings.mlflow_tracking_uri)
     run_id = args.run_id or latest_run_id("lightgbm")
     model = mlflow.lightgbm.load_model(f"runs:/{run_id}/model")
 

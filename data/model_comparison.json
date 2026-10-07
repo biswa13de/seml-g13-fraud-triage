@@ -4,7 +4,7 @@
     "pr_auc":0.9999791339,
     "roc_auc":0.9999991806,
     "recall_at_1pct_fpr":1.0,
-    "latency_ms_per_row":0.0011896546,
+    "latency_ms_per_row":0.0013191437,
     "run_id":null
   },
   {
@@ -12,15 +12,15 @@
     "pr_auc":0.9997432229,
     "roc_auc":0.9999834327,
     "recall_at_1pct_fpr":0.999375,
-    "latency_ms_per_row":0.0004453071,
-    "run_id":"ba2b78b50aa84aa5a9980df8e2e6b71d"
+    "latency_ms_per_row":0.0004459319,
+    "run_id":"ec0b85421ddd4ed9bb2b828742b04e99"
   },
   {
     "algorithm":"logistic_regression",
     "pr_auc":0.9588672316,
     "roc_auc":0.9979787545,
     "recall_at_1pct_fpr":0.93,
-    "latency_ms_per_row":0.0000294192,
+    "latency_ms_per_row":0.0000488347,
     "run_id":null
   }
 ]
