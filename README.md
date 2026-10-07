@@ -19,13 +19,10 @@ Architectural patterns: **Microservices** and **Event-Driven Architecture** (Red
 
 ## Dataset
 
-Kaggle [PaySim](https://www.kaggle.com/datasets/ealaxi/paysim1), a public simulated mobile-money transaction log (6.36M rows). The dataset is not committed to git.
+Kaggle [PaySim](https://www.kaggle.com/datasets/ealaxi/paysim1), a public simulated mobile-money transaction log (6.36M rows, 8,213 frauds, licence CC-BY-SA-4.0). The CSV is not committed to git; its SHA-256 checksum is recorded in [data/provenance.json](data/provenance.json).
 
-1. Kaggle → Settings → API → *Create New Token*. This downloads `kaggle.json`.
-2. Move it into place:
-   ```bash
-   mkdir -p ~/.kaggle && mv ~/Downloads/kaggle.json ~/.kaggle/ && chmod 600 ~/.kaggle/kaggle.json
-   ```
+1. Kaggle → Settings → API → create a token. Save it as `~/.kaggle/access_token` (or a legacy `~/.kaggle/kaggle.json`).
+2. Protect it: `chmod 600 ~/.kaggle/access_token`
 3. Download:
    ```bash
    pip install kaggle

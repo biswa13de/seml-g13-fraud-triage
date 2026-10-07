@@ -1,6 +1,6 @@
 """Download the PaySim dataset from Kaggle and record its checksum for provenance.
 
-Requires a Kaggle API token at ~/.kaggle/kaggle.json (never commit it).
+Requires a Kaggle API token at ~/.kaggle/access_token or ~/.kaggle/kaggle.json (never commit it).
 Usage: python data/download_paysim.py
 """
 import hashlib
@@ -26,8 +26,9 @@ def sha256(path: Path) -> str:
 
 
 def main() -> int:
-    if not (Path.home() / ".kaggle" / "kaggle.json").exists():
-        print("Missing ~/.kaggle/kaggle.json, see README 'Dataset' section.", file=sys.stderr)
+    kaggle_dir = Path.home() / ".kaggle"
+    if not any((kaggle_dir / f).exists() for f in ("access_token", "kaggle.json")):
+        print("Missing Kaggle token in ~/.kaggle/, see README 'Dataset' section.", file=sys.stderr)
         return 1
 
     if not RAW_CSV.exists():
