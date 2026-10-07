@@ -1,0 +1,15 @@
+__pycache__/
+*.pyc
+.venv/
+venv/
+.env
+mlruns/
+mlartifacts/
+*.db
+*.sqlite
+data/*.csv
+data/*.parquet
+.ipynb_checkpoints/
+.DS_Store
+.pytest_cache/
+.ruff_cache/
