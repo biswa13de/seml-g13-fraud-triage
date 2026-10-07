@@ -21,7 +21,7 @@ AIMLZG546 Software Engineering for Machine Learning · Weightage 10 marks
 
 **Differentiation (important).** The instructor's `fraud_demo` already shows a binary fraud classifier, a 4-feature model, FastAPI, MLflow and pipe-and-filter. Many groups will copy it. We go further in three ways:
 1. **Triage, not just classification.** The output is a 3-way *action* (ALLOW / STEP_UP / BLOCK) chosen by an expected-cost policy, plus an analyst case queue. This adds a GR4ML **PrescriptionGoal**.
-2. **UPI-specific behavioural features** (payee VPA age, new device, velocity windows), served from an **online feature store**.
+2. **Behavioural features on a public dataset (PaySim)**: payee fan-in (mule) and velocity windows served from an **online feature store**, plus explicit **leakage control**. The demo uses 4 hand-made synthetic columns.
 3. **Two distributed patterns, Microservices and Event-Driven Architecture**, plus supporting tactics (heartbeat, fallback rule engine, model registry).
 
 ---
@@ -70,8 +70,9 @@ AIMLZG546 Software Engineering for Machine Learning · Weightage 10 marks
 ### 2.3 Assumptions (world vs machine, Kästner ch. 7)
 - A1 Fraud labels arrive late (up to 30 days), so training uses only mature labels.
 - A2 Fraudsters adapt, so the data distribution drifts and retraining is required.
-- A3 Upstream sends a well-formed payment message with device ID and payer/payee VPA.
-- A4 Fraud base rate is about 0.5–1%.
+- A3 Upstream sends a well-formed payment message with payer/payee account IDs, type, amount and pre-transaction balances.
+- A4 Fraud base rate is about 0.1–1%. In PaySim it is ~0.13% overall and ~0.3% within TRANSFER/CASH_OUT.
+- A5 PaySim (simulated mobile money) is a reasonable public proxy for UPI P2P payments. Device and geo signals are not available, so a real deployment would add them.
 
 ### 2.4 Requirements → GR4ML traceability
 Map each FR to a GR4ML element: FR1 → Question goal Q1 / Insight; FR3 → PrescriptionGoal; FR5–6 → Decision goal D2; FR7 → Data Preparation (windowed aggregation). This table earns marks for consistency.
@@ -91,7 +92,7 @@ Map each FR to a GR4ML element: FR1 → Question goal Q1 / Insight; FR3 → Pres
 | **Indicators** (traffic light, `evaluates` ‖‖) | G1: Fraud loss (bps), target 2 / threshold 3 / worst 5. G2: False-decline rate, 0.5%. G3: Mean case resolution time, ≤ 4 h |
 | **Decision goals** (D) | D1 *Decide action for an incoming payment (Allow / Step-up / Block)* (AND under G1 and G2); D2 *Decide which flagged case to review first* (under G3); D3 *Decide whether to block the payee VPA* |
 | **Question goals** (Q) | Q1 *What is the probability that this payment is fraudulent?* (→ D1). Q2 *Which factors make this payment risky?* (→ D1, D3). Q3 *What is the expected loss of this flagged case?* (→ D2) |
-| **Insights** (box with attributes, `answers` --▷) | **Payment Fraud Risk Predictive Model**: type Predictive; input Payment + behavioural profile; output Fraud probability (0–1); usageFrequency Per transaction (real-time); updateFrequency Weekly; learningPeriod Last 6 months → answers Q1. **Risk Reason Codes**: type Explanatory; output Top-3 feature contributions → answers Q2. **Case Priority Score**: score × amount → answers Q3 |
+| **Insights** (box with attributes, `answers` --▷) | **Payment Fraud Risk Predictive Model**: type Predictive; input Payment + behavioural profile; output Fraud probability (0–1); usageFrequency Per transaction (real-time); updateFrequency Weekly; learningPeriod Last 30 days (rolling) → answers Q1. **Risk Reason Codes**: type Explanatory; output Top-3 feature contributions → answers Q2. **Case Priority Score**: score × amount → answers Q3 |
 
 ### 3.2 Analytics Design View
 | Element | Content |
@@ -108,10 +109,10 @@ The algorithms in this view must be the **same ones trained and compared in MLfl
 ### 3.3 Data Preparation View
 | Element | Content |
 |---|---|
-| **Entities** (PK bold) | `Transaction` (**txn_id**, payer_vpa, payee_vpa, amount, ts, channel {P2P, P2M, COLLECT, QR}, mcc, device_id, lat, lon). `PayerProfile` (**payer_vpa**, account_age_days, kyc_level, home_lat, home_lon). `Device` (**device_id**, first_seen_ts, os, is_rooted). `Payee` (**payee_vpa**, vpa_created_ts, is_merchant, on_blocklist). `FraudLabel` (**txn_id**, is_fraud, label_source {chargeback, complaint, analyst}, reported_ts) |
-| **Output entity** | `TrainingFeatureTable` (**txn_id**, ~18 features, is_fraud) |
-| **Operators** (box, data flow →) | **Filter**: successful payments only, last 6 months, labels at least 30 days old (note: SQL `WHERE`). **Join**: Transaction ⋈ PayerProfile ⋈ Device ⋈ Payee, left-join FraudLabel. **Clean**: dedupe txn_id, impute missing geo with the home location, cap amount at p99.9. **Windowed aggregation** (point-in-time correct, no future leakage): txn_count_1h, txn_count_24h, amount_sum_24h, distinct_payees_24h, avg_amount_30d. **Derive**: amount_to_avg_ratio, is_new_payee, payee_vpa_age_days, device_age_days, is_new_device, geo_distance_km, hour, is_night. **Encode**: one-hot channel, frequency-encode mcc. **Split**: time-based train / valid / test (not random). **Imbalance**: class weights (`scale_pos_weight`) |
-| **Notes** (dog-ear) | Point-in-time correctness; the same feature code is used for training and serving (no training–serving skew) |
+| **Entities** (PK bold) | `PaySimTransaction` (**txn_id** (row index), step, type, amount, nameOrig, oldbalanceOrg, newbalanceOrig, nameDest, oldbalanceDest, newbalanceDest, isFraud, isFlaggedFraud). Derived reference entities: `PayerAccount` (**nameOrig**, first_seen_step) and `PayeeAccount` (**nameDest**, is_merchant = prefix `M`, on_blocklist). `AnalystLabel` (**txn_id**, verdict, resolved_at), the feedback loop from the case service |
+| **Output entity** | `TrainingFeatureTable` (**txn_id**, ~16 pre-transaction features, is_fraud) |
+| **Operators** (box, data flow →) | **Filter**: `type IN ('TRANSFER','CASH_OUT')` (note: SQL `WHERE`; fraud exists only in these types). **Projection / leakage removal**: drop `newbalanceOrig`, `newbalanceDest`, `isFlaggedFraud`. **Clean**: dedupe, check amount > 0, check non-negative balances. **Sampling**: keep all fraud plus a time-stratified sample of genuine transactions (train only). **Windowed aggregation** (point-in-time correct, no future leakage): dest_txn_count_24h, dest_amount_sum_24h, dest_distinct_senders_24h, orig_txn_count_24h. **Derive**: hour_of_day, is_night, amount_to_balance_ratio, drains_account, zero-balance flags, dest_is_merchant, log_amount. **Encode**: one-hot type. **Split**: time-based on `step`. **Imbalance**: class weights (`scale_pos_weight`) |
+| **Notes** (dog-ear) | Point-in-time correctness. Post-transaction balance columns removed because they leak. The same feature code is used for training and serving (no training–serving skew). Source: Kaggle PaySim, with checksum recorded |
 
 ---
 
@@ -127,7 +128,7 @@ Format each one as a **QA scenario** (source, stimulus, environment, response, m
    **Why:** a missed fraud is a direct monetary loss. A false BLOCK loses a customer. Plain accuracy is meaningless at a 1% base rate, so we use PR-AUC and recall at a fixed FPR.
    **Design response:** LightGBM with class weights, expected-cost thresholds, a 3-way decision (STEP_UP absorbs uncertainty), an analyst feedback loop.
    **Verified by:** `tests/test_quality_model.py`, a quality gate that blocks registration as `champion`.
-3. **Explainability.** *Every STEP_UP or BLOCK decision returns the top-3 reason codes in plain language (for example, "New device first seen 2 h ago"), adding ≤ 10 ms p95.*
+3. **Explainability.** *Every STEP_UP or BLOCK decision returns the top-3 reason codes in plain language (for example, "Transfer drains 100% of the sender's balance"), adding ≤ 10 ms p95.*
    **Why:** analysts must justify actions on customer complaints and disputes. Regulators and auditors expect decisions on customer funds to be explainable. Reason codes also speed up case resolution (G3).
    **Design response:** SHAP TreeExplainer and a feature-to-text mapping.
    **Verified by:** `tests/test_quality_explainability.py`.
@@ -211,7 +212,7 @@ seml-g13-fraud-triage/
 │   ├── feature_store.py       # Redis read/write of velocity features
 │   ├── events.py              # Redis Streams publish/consume helpers
 │   └── config.py, logging.py  # pydantic-settings, JSON logs
-├── data/generate_upi_data.py  # synthetic UPI generator with fraud typologies
+├── data/download_paysim.py    # Kaggle download + checksum + sampling
 ├── training/
 │   ├── build_features.py      # point-in-time windowed features, time-based split
 │   ├── train.py               # LR / RF / LightGBM → MLflow runs
@@ -231,14 +232,19 @@ seml-g13-fraud-triage/
 
 ### 7.3 Step-by-step build
 
-**Step 1: Synthetic UPI data** (`data/generate_upi_data.py`). Use a seed so it is reproducible.
-- 5,000 payers, 3,000 payees (10% mule-like), ~200k payments over 6 months, fraud rate ~1%.
-- Fraud typologies: (a) **account takeover**: new device + night + new payee + amount far above average; (b) **collect-request scam**: channel COLLECT + payee VPA < 7 days old; (c) **mule fan-in**: many distinct payers → the same new payee; (d) **probing burst**: ≥ 5 small payments within 10 minutes, then a large one.
-- **Add realism:** 2–3% label noise, genuine payments that look suspicious (night shopping, new phone), missing device/geo values. If PR-AUC comes out at 0.99+, the data is too easy and graders will notice. Tune toward PR-AUC ≈ 0.80–0.90.
+**Step 1: Public dataset, PaySim** (`data/download_paysim.py`). Kaggle `ealaxi/paysim1`, ~470 MB CSV, 6.36M mobile-money transactions over 743 hourly steps (30 days), ~0.13% fraud.
+- **Why PaySim:** it is the best-known public *mobile-money / P2P digital payment* dataset. It has sender and receiver account IDs (needed for velocity and mule features), transaction types and time. The credit-card dataset (`mlg-ulb`) has anonymised PCA features, so it can't produce meaningful reason codes. IEEE-CIS is card-not-present e-commerce and very heavy.
+- **Mapping to UPI (state this in the report):** `nameOrig` → payer VPA, `nameDest` → payee VPA (`M…` = merchant), `TRANSFER` → P2P transfer, `CASH_OUT` → cash-out via agent, `PAYMENT` → P2M, `step` → hour of the month.
+- **Download:** the Kaggle API token goes in `~/.kaggle/kaggle.json` (chmod 600), never in the repo. A SHA-256 checksum is recorded for provenance. The CSV stays out of git (`data/*.csv` is ignored).
+- **Leakage control (an important SE-for-ML point to write up):** `newbalanceOrig` and `newbalanceDest` are **post-transaction** values that are not known at authorisation time, so we **drop them**. `isFlaggedFraud` is the legacy rule's output, so it isn't used as a feature. We keep it only as the **baseline rule** to compare against.
+- **Known data limitations:** payers rarely repeat in PaySim, so payer velocity is weak and payee fan-in (mule) features carry the behavioural signal. Fraud appears only in TRANSFER and CASH_OUT. PAYMENT, DEBIT and CASH_IN are ALLOWed by rule and excluded from training (document this as a design decision).
+- **Working sample** for laptop speed: all fraud plus a time-stratified sample of genuine TRANSFER/CASH_OUT (~1M rows). Keep the true base rate in validation and test so the metrics are honest.
 
 **Step 2: Features** (`common/features.py`, `training/build_features.py`)
-- One `compute_features(payment, payer_state) -> dict` function, called by both training (replaying history in time order) and serving (state read from Redis). Test that they produce identical outputs.
-- Time-based split: months 1–4 train, month 5 validation, month 6 test.
+- Pre-transaction features only: `amount`, `log_amount`, `type_TRANSFER`, `oldbalanceOrg`, `amount_to_balance_ratio` (amount / oldbalanceOrg), `drains_account` (amount ≥ 0.99 × oldbalanceOrg), `orig_zero_balance`, `oldbalanceDest`, `dest_zero_balance`, `dest_is_merchant`, `hour_of_day` (step mod 24), `is_night`, plus point-in-time velocity from the online feature store: `dest_txn_count_24h`, `dest_amount_sum_24h`, `dest_distinct_senders_24h`, `orig_txn_count_24h`.
+- One `compute_features(payment, store_state) -> dict` function, called by both training (replaying history in step order) and serving (state read from Redis). A test checks that they produce identical outputs.
+- Time-based split: steps 1–500 train, 501–600 validation, 601–743 test.
+- If PR-AUC comes out near 0.99, check for leakage first. Then report honestly that PaySim is simulated and relatively separable, and lean on the cost and latency results.
 
 **Step 3: Training and experiment tracking** (`training/train.py`)
 - Train LR (scaled, `class_weight='balanced'`), RF, LightGBM (`scale_pos_weight`). Log params, PR-AUC, ROC-AUC, recall@1%FPR, inference latency per row, and the PR curve image to MLflow.
@@ -259,25 +265,27 @@ Also `GET /health`.
 Example response:
 ```json
 {"txn_id":"T123","decision":"STEP_UP","risk_score":0.62,
- "reason_codes":["New device first seen 2h ago","Payee VPA created 3 days ago","Amount 8.4x payer's 30-day average"],
+ "reason_codes":["Transfer drains 100% of sender balance","Receiver got 14 payments from 11 senders in 24h","Receiver balance was 0 before payment"],
  "model_version":"3","degraded":false,"latency_ms":41.7}
 ```
 
 **Step 8: Consumers** (each in its own consumer group, idempotent on txn_id)
 - `case-service`: creates a case when the FR5 rule matches. `GET /cases?status=OPEN` is sorted by priority. `POST /cases/{id}/resolve` stores the label in a `labels` table, which is the feedback loop.
-- `feature-updater`: updates Redis sorted sets for 1 h / 24 h windows, the running 30-day average, known devices and known payees.
+- `feature-updater`: updates Redis sorted sets for 1 h / 24 h windows, per-payee distinct senders and amount sums (fan-in) and per-payer counts.
 - `monitor-service`: rolling decision mix, score histogram, PSI against the training baseline, p95 latency. `GET /metrics`. Logs a `DRIFT_ALERT` when PSI > 0.2.
 
 **Step 9: Analyst console** (Streamlit). Tabs: *Simulate Payment* (form plus presets: genuine, ATO, collect scam, probing), *Case Queue* (resolve buttons), *Monitoring* (decision mix, PSI, latency). This is where most screenshots come from.
 
-**Step 10: Docker Compose.** Services: redis, mlflow, triage-api, scoring, case-service, feature-updater, monitor, console. Add healthchecks and `depends_on: condition: service_healthy`. Demo `--scale scoring=2`.
+**Step 10: Run modes (Docker is not mandatory).**
+- **Primary: Docker Compose.** Services: redis, mlflow, triage-api, scoring, case-service, feature-updater, monitor, console. Add healthchecks and `depends_on: condition: service_healthy`. Demo `--scale scoring=2`.
+- **Fallback: `make run-local`.** Starts every service with `uvicorn` / `streamlit` in a local venv. It needs only Redis (`brew install redis`). Tests use `fakeredis`, so `pytest` runs with no infrastructure at all.
 
 **Step 11: Tests** (`pytest -v`. The output screenshot goes in the report.)
 | Test file | What it proves |
 |---|---|
 | `test_data_quality.py` | Schema, no duplicate txn_id, fraud rate within 0.5–2%, no future leakage in windowed features |
 | `test_features_parity.py` | Training and serving feature functions give identical output (no skew) |
-| `test_quality_model.py` | QA2: PR-AUC and recall@1%FPR gates; invariance (changing payer ID doesn't change the score); directional (new device + new payee raises risk) |
+| `test_quality_model.py` | QA2: PR-AUC and recall@1%FPR gates; invariance (changing payer ID doesn't change the score); directional (draining the balance into a high fan-in receiver raises risk) |
 | `test_quality_performance.py` | QA1: p95 latency of the triage endpoint |
 | `test_quality_explainability.py` | QA3: 3 reason codes for every STEP_UP/BLOCK; overhead ≤ 10 ms |
 | `test_contract.py` | Bad payload → 422; response schema |
@@ -288,7 +296,7 @@ Example response:
 
 **Step 13: CI.** A GitHub Actions workflow runs ruff and pytest on every push. The green tick is worth a screenshot.
 
-**Step 14: Notebook `13.ipynb`.** Group details cell → problem → data generation and EDA → features → 3-model comparison (MLflow) → thresholds and cost curve → SHAP → calls to the running API (3 scenario payments) → links to the services.
+**Step 14: Notebook `13.ipynb`.** Group details cell → problem → dataset download, provenance and EDA → features → 3-model comparison (MLflow) → thresholds and cost curve → SHAP → calls to the running API (3 scenario payments) → links to the services.
 
 ### 7.4 Screenshot checklist for the report (each needs 2–3 lines of explanation)
 1. `docker compose ps`, all services healthy
