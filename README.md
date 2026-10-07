@@ -22,13 +22,20 @@ Architectural patterns: **Microservices** and **Event-Driven Architecture** (Red
 
 Kaggle [PaySim](https://www.kaggle.com/datasets/ealaxi/paysim1), a public simulated mobile-money transaction log (6.36M rows, 8,213 frauds, licence CC-BY-SA-4.0). The CSV is not committed to git; its SHA-256 checksum is recorded in [data/provenance.json](data/provenance.json).
 
+**No Kaggle account or API token needed.** `data/download_paysim.py` downloads it via [`kagglehub`](https://pypi.org/project/kagglehub/), which fetches this public dataset anonymously:
+```bash
+pip install -r requirements.txt
+python data/download_paysim.py
+```
+This is also how `13.ipynb` downloads it on Google Colab — no setup step, nothing to upload.
+
+<details>
+<summary>Fallback: the <code>kaggle</code> CLI (only used if kagglehub is unavailable)</summary>
+
 1. Kaggle → Settings → API → create a token. Save it as `~/.kaggle/access_token` (or a legacy `~/.kaggle/kaggle.json`).
 2. Protect it: `chmod 600 ~/.kaggle/access_token`
-3. Download:
-   ```bash
-   pip install kaggle
-   python data/download_paysim.py
-   ```
+3. `python data/download_paysim.py` will use this automatically if `kagglehub` isn't installed or its download fails.
+</details>
 
 ## Architecture
 
@@ -90,12 +97,13 @@ make run-local
 **inline**, picks cost-based thresholds, runs SHAP explainability, and (when available) calls the
 live running system for three scenario payments.
 
-**Runs on Google Colab**, top to bottom, with no setup beyond a Kaggle API token: Section 0 clones
-this repository and installs dependencies, Section 2 downloads PaySim (prompting for `kaggle.json`
-if needed), and Section 5 trains all three models against a local, file-based MLflow store —
-there's no dependency on this project's Docker stack. Section 9 (calling the live system) detects
-whether `http://localhost:8000` is reachable and skips itself automatically when it isn't (which is
-always the case on Colab, since it's a separate machine from the one running our containers).
+**Runs on Google Colab**, top to bottom, with zero setup — no Kaggle account, no API token, nothing
+to upload: Section 0 clones this repository and installs dependencies, Section 2 downloads PaySim
+anonymously via `kagglehub`, and Section 5 trains all three models against a local, file-based
+MLflow store — there's no dependency on this project's Docker stack. Section 9 (calling the live
+system) detects whether `http://localhost:8000` is reachable and skips itself automatically when
+it isn't (which is always the case on Colab, since it's a separate machine from the one running our
+containers).
 
 **Runs locally** too, either from a fresh clone (same as Colab) or against this project's own
 checkout — it detects which, and skips the clone/download steps if already present:

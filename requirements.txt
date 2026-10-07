@@ -16,6 +16,7 @@ pytest
 ruff
 matplotlib
 matplotlib-inline
+kagglehub
 kaggle
 streamlit
 jupyter

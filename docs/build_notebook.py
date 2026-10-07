@@ -40,13 +40,13 @@ md(f"""\
 
 ## How to run this notebook
 
-**On Google Colab:** run every cell top to bottom. Section 0 clones the repository and installs
-dependencies; Section 2 downloads the dataset from Kaggle (you will be prompted to upload a
-`kaggle.json` API token — see [Kaggle's API docs](https://www.kaggle.com/docs/api)); Section 6
-trains the three models **inline** (~1–2 minutes on Colab's CPU runtime) and uses a local, file-based
-MLflow store, since Colab cannot reach our local Docker services. Section 10 (calling the live
-running system) only works on the machine that has `docker compose up -d` running — on Colab it is
-skipped automatically.
+**On Google Colab:** run every cell top to bottom, with no setup and no Kaggle account or API
+token needed. Section 0 clones the repository and installs dependencies; Section 2 downloads the
+dataset via `kagglehub`, which fetches this public dataset anonymously; Section 5 trains the three
+models **inline** (~1–2 minutes on Colab's CPU runtime) against a local, file-based MLflow store,
+since Colab cannot reach our local Docker services. Section 9 (calling the live running system)
+only works on the machine that has `docker compose up -d` running — on Colab it is skipped
+automatically.
 
 **Locally, with our Docker stack running:** the notebook still works end to end; Section 0's clone
 step is skipped if the repository is already present, Section 2 skips the download if the CSV is
@@ -191,24 +191,16 @@ receiver account IDs (needed for velocity and mule features).
 `TRANSFER` → P2P transfer · `CASH_OUT` → cash-out via agent · `step` → hour of the month.
 
 The cell below downloads the CSV if it is not already present (skipped on a re-run, and skipped
-locally if you already ran `python data/download_paysim.py`). It needs a Kaggle API token:
-
-- **On Colab:** you will be prompted to upload `kaggle.json` (Kaggle → Settings → API → *Create New Token*).
-- **Locally:** place the token at `~/.kaggle/kaggle.json` or `~/.kaggle/access_token` first (see the main README), then just re-run this cell.
+locally if you already ran `python data/download_paysim.py`). It uses `kagglehub`
+(`data/download_paysim.py`'s preferred path), which downloads this public dataset **with no
+Kaggle account, login or API token** — nothing to upload, nothing to configure, works the same on
+Colab and locally. (A Kaggle API token is only needed for the `kaggle` CLI fallback, which this
+script only falls back to if `kagglehub` is somehow unavailable.)
 """)
 code("""\
 DATA_CSV = REPO_ROOT / "data" / "paysim.csv"
 
 if not DATA_CSV.exists():
-    if IN_COLAB:
-        from google.colab import files
-        kaggle_dir = Path.home() / ".kaggle"
-        kaggle_dir.mkdir(exist_ok=True)
-        if not (kaggle_dir / "kaggle.json").exists():
-            print("Upload your kaggle.json API token:")
-            uploaded = files.upload()
-            (kaggle_dir / "kaggle.json").write_bytes(next(iter(uploaded.values())))
-            os.chmod(kaggle_dir / "kaggle.json", 0o600)
     subprocess.run([sys.executable, "data/download_paysim.py"], check=True)
 else:
     print(f"Found existing {DATA_CSV}, skipping download.")

@@ -1,10 +1,16 @@
-"""Download the PaySim dataset from Kaggle and record its checksum for provenance.
+"""Download the PaySim dataset and record its checksum for provenance.
 
-Requires a Kaggle API token at ~/.kaggle/access_token or ~/.kaggle/kaggle.json (never commit it).
+Uses `kagglehub` first, which downloads this public dataset with NO Kaggle
+account, login or API token required -- this is what makes the dataset step
+work unattended on Google Colab. Falls back to the `kaggle` CLI (which does
+need a token at ~/.kaggle/access_token or ~/.kaggle/kaggle.json) only if
+kagglehub is unavailable or fails.
+
 Usage: python data/download_paysim.py
 """
 import hashlib
 import json
+import shutil
 import subprocess
 import sys
 import zipfile
@@ -25,23 +31,47 @@ def sha256(path: Path) -> str:
     return h.hexdigest()
 
 
-def main() -> int:
+def download_via_kagglehub() -> bool:
+    try:
+        import kagglehub
+    except ImportError:
+        return False
+    try:
+        downloaded_dir = Path(kagglehub.dataset_download(DATASET))
+    except Exception as exc:
+        print(f"kagglehub download failed ({exc}), falling back to the kaggle CLI.", file=sys.stderr)
+        return False
+    (csv_path,) = downloaded_dir.glob("*.csv")
+    shutil.copy(csv_path, RAW_CSV)
+    return True
+
+
+def download_via_kaggle_cli() -> bool:
     kaggle_dir = Path.home() / ".kaggle"
     if not any((kaggle_dir / f).exists() for f in ("access_token", "kaggle.json")):
-        print("Missing Kaggle token in ~/.kaggle/, see README 'Dataset' section.", file=sys.stderr)
-        return 1
-
-    if not RAW_CSV.exists():
-        subprocess.run(
-            ["kaggle", "datasets", "download", "-d", DATASET, "-p", str(DATA_DIR)],
-            check=True,
+        print(
+            "Missing Kaggle token in ~/.kaggle/ and kagglehub was unavailable. "
+            "See README 'Dataset' section.",
+            file=sys.stderr,
         )
-        archive = DATA_DIR / "paysim1.zip"
-        with zipfile.ZipFile(archive) as zf:
-            (csv_name,) = [n for n in zf.namelist() if n.endswith(".csv")]
-            zf.extract(csv_name, DATA_DIR)
-        (DATA_DIR / csv_name).rename(RAW_CSV)
-        archive.unlink()
+        return False
+    subprocess.run(
+        ["kaggle", "datasets", "download", "-d", DATASET, "-p", str(DATA_DIR)],
+        check=True,
+    )
+    archive = DATA_DIR / "paysim1.zip"
+    with zipfile.ZipFile(archive) as zf:
+        (csv_name,) = [n for n in zf.namelist() if n.endswith(".csv")]
+        zf.extract(csv_name, DATA_DIR)
+    (DATA_DIR / csv_name).rename(RAW_CSV)
+    archive.unlink()
+    return True
+
+
+def main() -> int:
+    if not RAW_CSV.exists():
+        if not (download_via_kagglehub() or download_via_kaggle_cli()):
+            return 1
 
     provenance = {
         "source": f"https://www.kaggle.com/datasets/{DATASET}",
