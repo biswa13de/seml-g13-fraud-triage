@@ -6,10 +6,11 @@ AIMLZG546 Software Engineering for Machine Learning · Assignment I · **Group 1
 
 | Sl. No | BITS ID | Name | Contribution (qualitative) | % Contribution |
 |---|---|---|---|---|
-| 1 | `<BITS_ID_1>` | `<NAME_1>` (Lead) | `<TBD>` | `<TBD>` |
-| 2 | `<BITS_ID_2>` | `<NAME_2>` | `<TBD>` | `<TBD>` |
-| 3 | `<BITS_ID_3>` | `<NAME_3>` | `<TBD>` | `<TBD>` |
-| 4 | `<BITS_ID_4>` | `<NAME_4>` | `<TBD>` | `<TBD>` |
+| 1 | 2025ae05576 | Anirudh Anand | Report lead. Domain and problem statement, ML formulation, requirements and measurable goals (Sections 1 and 2), Business View, final report and PDF. | 25 |
+| 2 | 2025ae05178 | Aniketh Paul | GR4ML Analytics Design and Data Preparation views, top three quality requirements (Sections 3.2, 3.3, 4). Data part of the pipeline: EDA, ingest, clean, features, split. | 25 |
+| 3 | 2025ae05898 | Pushadapu Sanjay Kumar | Architecture diagram (ML and non-ML components), the two patterns (Sections 5 and 6). FastAPI service, input validation, prediction logging, automated tests. | 25 |
+| 4 | 2025af05111 | Biswajeet Mahato (Group Lead) | Model part of the pipeline: train and evaluate filters, threshold on validation, MLflow tracking and registry. End-to-end run, screenshots, Sections 7.2, 7.3, 8, 9. | 25 |
+| | | | **Total** | **100** |
 
 ## What it does
 
