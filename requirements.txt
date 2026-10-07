@@ -15,5 +15,10 @@ httpx
 pytest
 ruff
 matplotlib
+matplotlib-inline
 kaggle
 streamlit
+jupyter
+ipykernel
+nbformat
+nbclient

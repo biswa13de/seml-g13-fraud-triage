@@ -82,3 +82,13 @@ mlflow server --host 0.0.0.0 --port 5000 --backend-store-uri sqlite:///mlflow.db
 make train
 make run-local
 ```
+
+## Notebook
+
+`13.ipynb` walks through the dataset, EDA, the 3-model MLflow comparison, the cost-based
+thresholds, SHAP explainability, and finally calls the **live running system** for three scenario
+payments. With `redis` and `mlflow` up and a champion registered (`make train`), open it with:
+```bash
+jupyter notebook 13.ipynb
+```
+The Section 10 cells (live API calls) additionally need the full stack up (`docker compose up -d`).
