@@ -25,8 +25,8 @@
         <rect x="320" y="200" width="230" height="110" rx="8" fill="#e3f0ff" stroke="#2f5fa3" stroke-width="1.8"/>
         <text x="435" y="224" text-anchor="middle" font-size="12" font-weight="700">scoring :8001</text>
         <text x="435" y="240" text-anchor="middle" font-size="9.5" fill="#55585e">pipe-and-filter</text>
-        <text x="435" y="256" text-anchor="middle" font-size="9" fill="#55585e">validate &#8594; features &#8594;</text>
-        <text x="435" y="270" text-anchor="middle" font-size="9" fill="#55585e">predict &#8594; SHAP explain</text>
+        <text x="435" y="256" text-anchor="middle" font-size="9" fill="#55585e">validate -&gt; features -&gt;</text>
+        <text x="435" y="270" text-anchor="middle" font-size="9" fill="#55585e">predict -&gt; SHAP explain</text>
         <text x="435" y="296" text-anchor="middle" font-size="9" fill="#2f5fa3" font-weight="700">ML</text>
 
         <!-- Online Feature Store -->
@@ -79,7 +79,7 @@
         <text x="1050" y="231" text-anchor="middle" font-size="10">select_thresholds.py</text>
         <line x1="1050" y1="244" x2="1050" y2="258" stroke="#1c1d1f" stroke-width="1.2" marker-end="url(#arrSync)"/>
         <rect x="940" y="260" width="220" height="34" fill="#faf9f7" stroke="#1c1d1f" stroke-width="1.2"/>
-        <text x="1050" y="281" text-anchor="middle" font-size="10">register.py &#8594; quality gate</text>
+        <text x="1050" y="281" text-anchor="middle" font-size="10">register.py -&gt; quality gate</text>
 
         <!-- sync arrows -->
         <g stroke="#1c1d1f" stroke-width="1.4" marker-end="url(#arrSync)" fill="none">

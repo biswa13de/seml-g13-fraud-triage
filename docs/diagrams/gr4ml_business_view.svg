@@ -195,6 +195,6 @@
             <rect y="14" width="11" height="7" fill="#D64545" stroke="#1c1d1f" stroke-width="0.5"/>
           </g>
           <text x="48" y="124">Indicator</text>
-          <text x="16" y="148" font-style="italic">desires &#8594;   evaluates &#8213;   answers - -&#8594;   AND split</text>
+          <text x="16" y="148" font-style="italic">desires (solid), evaluates (tick), answers (dashed), AND split</text>
         </g>
       </svg>

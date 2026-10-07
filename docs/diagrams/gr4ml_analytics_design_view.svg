@@ -83,7 +83,7 @@
           <path d="M545,300 C650,170 700,100 760,58" stroke="#2f8f52" marker-end="url(#arrSolid)"/>
           <text x="660" y="130" font-size="9.5" fill="#2f8f52" font-weight="700">+</text>
           <path d="M545,308 C650,300 700,290 760,260" stroke="#c0392b" stroke-dasharray="4,3" marker-end="url(#arrSolid)"/>
-          <text x="660" y="300" font-size="9.5" fill="#c0392b" font-weight="700">&#8722;</text>
+          <text x="660" y="300" font-size="9.5" fill="#c0392b" font-weight="700">-</text>
           <path d="M545,320 C650,350 700,355 760,358" stroke="#2f8f52" marker-end="url(#arrSolid)"/>
           <text x="660" y="355" font-size="9.5" fill="#2f8f52" font-weight="700">++</text>
           <path d="M545,330 C650,400 700,430 760,450" stroke="#2f8f52" marker-end="url(#arrSolid)"/>
@@ -93,13 +93,19 @@
         <!-- LR influence (dashed grey, for contrast) -->
         <g stroke-width="1.1" fill="none" opacity="0.55">
           <path d="M545,90 C650,70 700,60 760,58" stroke="#1c1d1f" marker-end="url(#arrSolid)"/>
-          <text x="600" y="68" font-size="9" font-style="italic">LR: + latency, &#8722; accuracy</text>
+          <text x="600" y="68" font-size="9" font-style="italic">LR: + latency, - accuracy</text>
         </g>
 
-        <!-- satisfied / denied marks -->
-        <text x="565" y="300" font-size="16" fill="#2f8f52">&#10003;</text>
-        <text x="565" y="90" font-size="16" fill="#c0392b">&#10007;</text>
-        <text x="565" y="420" font-size="16" fill="#c0392b">&#10007;</text>
+        <!-- satisfied / denied marks, drawn as shapes (not text glyphs) so every renderer shows them -->
+        <polyline points="558,298 563,304 574,290" fill="none" stroke="#2f8f52" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+        <g stroke="#c0392b" stroke-width="2.4" stroke-linecap="round">
+          <line x1="558" y1="84" x2="570" y2="96"/>
+          <line x1="570" y1="84" x2="558" y2="96"/>
+        </g>
+        <g stroke="#c0392b" stroke-width="2.4" stroke-linecap="round">
+          <line x1="558" y1="414" x2="570" y2="426"/>
+          <line x1="570" y1="414" x2="558" y2="426"/>
+        </g>
 
         <!-- Legend -->
         <g transform="translate(20,480)" font-size="10">
@@ -111,7 +117,13 @@
           <rect x="360" y="2" width="56" height="22" rx="11" fill="#f1e8fb" stroke="#7a4fb5"/>
           <text x="424" y="18">Softgoal</text>
           <text x="500" y="18" fill="#2f8f52" font-weight="700">++/+ positive influence</text>
-          <text x="700" y="18" fill="#c0392b" font-weight="700">&#8722;/&#8722;&#8722; negative</text>
-          <text x="880" y="18">&#10003; satisfied &#160; &#10007; denied</text>
+          <text x="700" y="18" fill="#c0392b" font-weight="700">-/-- negative</text>
+          <polyline points="875,15 879,19 887,8" fill="none" stroke="#2f8f52" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <text x="895" y="18">satisfied</text>
+          <g stroke="#c0392b" stroke-width="2" stroke-linecap="round">
+            <line x1="965" y1="9" x2="973" y2="19"/>
+            <line x1="973" y1="9" x2="965" y2="19"/>
+          </g>
+          <text x="980" y="18">denied</text>
         </g>
       </svg>
