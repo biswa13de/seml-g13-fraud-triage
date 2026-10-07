@@ -9,6 +9,7 @@ mlartifacts/
 *.sqlite
 data/*.csv
 data/*.parquet
+data/paysim1.zip
 .ipynb_checkpoints/
 .DS_Store
 .pytest_cache/

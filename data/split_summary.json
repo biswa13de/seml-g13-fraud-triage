@@ -1,0 +1,29 @@
+{
+  "train": {
+    "rows": 665615,
+    "frauds": 5561,
+    "fraud_rate": 0.00835,
+    "steps": [
+      1,
+      500
+    ]
+  },
+  "valid": {
+    "rows": 81080,
+    "frauds": 1052,
+    "fraud_rate": 0.01297,
+    "steps": [
+      501,
+      600
+    ]
+  },
+  "test": {
+    "rows": 43550,
+    "frauds": 1600,
+    "fraud_rate": 0.03674,
+    "steps": [
+      601,
+      743
+    ]
+  }
+}

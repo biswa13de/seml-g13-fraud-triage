@@ -1,0 +1,8 @@
+{
+  "t_stepup": 0.0004007895179131073,
+  "t_block": 0.0007369737335973371,
+  "expected_cost": 75900.0,
+  "stepup_rate": 0.0035520473606314752,
+  "run_id": "ba2b78b50aa84aa5a9980df8e2e6b71d",
+  "max_stepup_rate_constraint": 0.03
+}
