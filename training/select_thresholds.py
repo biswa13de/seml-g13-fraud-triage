@@ -34,16 +34,17 @@ COST_FALSE_BLOCK = 500.0
 COST_STEPUP_RESIDUAL_FRACTION = 0.20  # fraction of a STEP_UPed fraud still assumed lost
 
 
-def latest_run_id(run_name: str) -> str:
-    mlflow.set_tracking_uri(settings.mlflow_tracking_uri)
-    runs = mlflow.search_runs(
-        experiment_names=["fraud-triage"],
-        filter_string=f"tags.mlflow.runName = '{run_name}'",
-        order_by=["start_time DESC"],
-    )
-    if runs.empty:
-        raise SystemExit(f"No MLflow run named '{run_name}'. Run `python -m training.train` first.")
-    return runs.iloc[0]["run_id"]
+def load_champion() -> dict:
+    """The model training.train selected (algorithm + MLflow run id)."""
+    path = DATA_DIR / "champion.json"
+    if not path.exists():
+        raise SystemExit("No data/champion.json. Run `python -m training.train` first.")
+    return json.loads(path.read_text())
+
+
+def load_run_model(run_id: str, algorithm: str):
+    flavor = mlflow.lightgbm if algorithm == "lightgbm" else mlflow.sklearn
+    return flavor.load_model(f"runs:/{run_id}/model")
 
 
 def expected_cost(y_true: np.ndarray, amount: np.ndarray, scores: np.ndarray,
@@ -78,12 +79,13 @@ def search(y_true: np.ndarray, amount: np.ndarray, scores: np.ndarray) -> dict:
 
 def main() -> None:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--run-id", default=None, help="MLflow run id; defaults to latest lightgbm run")
+    parser.add_argument("--run-id", default=None, help="MLflow run id; defaults to data/champion.json")
     args = parser.parse_args()
 
     mlflow.set_tracking_uri(settings.mlflow_tracking_uri)
-    run_id = args.run_id or latest_run_id("lightgbm")
-    model = mlflow.lightgbm.load_model(f"runs:/{run_id}/model")
+    champion = load_champion()
+    run_id = args.run_id or champion["run_id"]
+    model = load_run_model(run_id, champion["algorithm"])
 
     valid = pd.read_parquet(DATA_DIR / "features_valid.parquet")
     scores = model.predict_proba(valid[FEATURE_NAMES])[:, 1]

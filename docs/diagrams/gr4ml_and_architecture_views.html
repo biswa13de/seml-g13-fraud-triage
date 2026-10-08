@@ -446,6 +446,7 @@
         <!-- satisfied / denied marks -->
         <text x="565" y="300" font-size="16" fill="#2f8f52">&#10003;</text>
         <text x="565" y="90" font-size="16" fill="var(--accent)">&#10007;</text>
+        <text x="565" y="210" font-size="16" fill="var(--accent)">&#10007;</text>
         <text x="565" y="420" font-size="16" fill="var(--accent)">&#10007;</text>
 
         <!-- Legend -->
@@ -470,7 +471,7 @@
       <tr><td>Analytics Goal</td><td>AG1 Classification (Prediction) · AG2 Triage policy (Prescription) · AG3 Explanation (Description)</td></tr>
       <tr><td>Algorithm</td><td>Logistic Regression, Random Forest, Isolation Forest, <strong>LightGBM (champion)</strong></td></tr>
       <tr><td>Softgoal</td><td>Detection accuracy, Low inference latency, Interpretability, Tolerance to missing values, Adaptability to drift</td></tr>
-      <tr><td>Satisfied / Denied</td><td>LightGBM ✓ (PR-AUC 0.9997, 0.4ms/row) · Logistic Regression ✗ (lower accuracy) · Isolation Forest ✗ (weaker without labels)</td></tr>
+      <tr><td>Satisfied / Denied</td><td>LightGBM ✓ (tied best validation accuracy, fastest to score and explain one payment) · Random Forest ✗ (equally accurate, 6–12x slower per payment, 6x larger) · Logistic Regression ✗ (validation PR-AUC 0.924) · Isolation Forest ✗ (considered, not trained)</td></tr>
     </table>
   </section>
 

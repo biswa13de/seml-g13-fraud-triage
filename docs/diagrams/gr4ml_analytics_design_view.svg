@@ -103,6 +103,10 @@
           <line x1="570" y1="84" x2="558" y2="96"/>
         </g>
         <g stroke="#c0392b" stroke-width="2.4" stroke-linecap="round">
+          <line x1="558" y1="194" x2="570" y2="206"/>
+          <line x1="570" y1="194" x2="558" y2="206"/>
+        </g>
+        <g stroke="#c0392b" stroke-width="2.4" stroke-linecap="round">
           <line x1="558" y1="414" x2="570" y2="426"/>
           <line x1="570" y1="414" x2="558" y2="426"/>
         </g>

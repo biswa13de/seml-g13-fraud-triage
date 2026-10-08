@@ -162,12 +162,12 @@ body.push(simpleTable(["Element", "Instances"], [
 
 body.push(H2("3.2 Analytics Design View (What?)"));
 body.push(...CenteredImage("docs/diagrams/gr4ml_analytics_design_view.png", CONTENT_WIDTH_DXA, 6.6,
-  "Figure 2. Analytics Design View — the algorithms actually trained and compared (training/train.py), and their influence on softgoals matching Section 4's quality attributes."));
+  "Figure 2. Analytics Design View — four candidate algorithms and their influence on the softgoals from Section 4. Three were trained and compared in training/train.py (Section 7.3); Isolation Forest was considered and rejected without training."));
 body.push(simpleTable(["Element", "Instances"], [
   ["Analytics Goal", "AG1 Classification (Prediction) · AG2 Triage policy (Prescription) · AG3 Explanation (Description)"],
   ["Algorithm", "Logistic Regression, Random Forest, Isolation Forest, LightGBM (champion)"],
   ["Softgoal", "Detection accuracy, Low inference latency, Interpretability, Tolerance to missing values, Adaptability to drift"],
-  ["Satisfied / Denied", "LightGBM satisfied (PR-AUC 0.9997, 0.5 ms/row) · Logistic Regression denied (lower accuracy) · Isolation Forest denied (weaker without labels)"],
+  ["Satisfied / Denied", "LightGBM satisfied (tied best on validation accuracy; fastest to score and explain one payment; smallest; quickest to retrain) · Random Forest denied (equally accurate, but 6–12x slower per payment and 6x larger) · Logistic Regression denied (validation PR-AUC 0.924) · Isolation Forest denied (considered, not trained: unsupervised, ignores the labels we have)"],
 ], [25, 75]));
 
 body.push(H2("3.3 Data Preparation View (How?)"));
@@ -254,13 +254,43 @@ body.push(H2("7.2 Feature Pipeline"));
 body.push(P("One function, common/features.py:compute_features(), is called by both the offline training pipeline and the online scoring service, so the two paths can never drift apart. tests/test_features_parity.py proves this by replaying raw transactions through the same online feature store used at training time and asserting byte-identical output against the offline pipeline."));
 
 body.push(H2("7.3 Model Training and Selection"));
-body.push(P("Three algorithms were trained and logged to MLflow:"));
-body.push(simpleTable(["Algorithm", "PR-AUC", "ROC-AUC", "Recall @ 1% FPR", "Latency (ms/row)"], [
-  ["Random Forest", "0.99998", "0.99999", "1.0000", "0.0013"],
-  ["LightGBM (champion)", "0.99974", "0.99998", "0.9994", "0.0005"],
-  ["Logistic Regression", "0.95887", "0.99798", "0.9300", "0.00004"],
-], [30, 17.5, 17.5, 17.5, 17.5]));
-body.push(P("LightGBM is the champion: within 0.0003 PR-AUC of Random Forest but roughly 2–3x faster per row, which matters once the QA1 latency budget (p95 ≤ 150 ms end-to-end) has to also cover SHAP explanation and the network hop to the gateway."));
+body.push(P(
+  "Three algorithms were trained and logged to MLflow (training/train.py). The selection rule was fixed " +
+  "before looking at the results, and it uses only the validation split. The test split plays no part in " +
+  "the choice; it is kept for the final quality gate (training/register.py)."
+));
+body.push(Bullet("Step 1: any model whose validation PR-AUC is within 0.001 of the best counts as tied on accuracy."));
+body.push(Bullet("Step 2: among the tied models, pick the one with the lowest p95 time to score one payment, because the service scores one payment per request inside the QA1 latency budget."));
+body.push(P("For each model we also measured SHAP explanation time for one payment, model size and training time (Random Forest is timed single-threaded, which is how it would be served):"));
+const cmp = JSON.parse(fs.readFileSync(path.join(REPO, "data/model_comparison.json"), "utf8"));
+const champ = JSON.parse(fs.readFileSync(path.join(REPO, "data/champion.json"), "utf8"));
+const NAMES = { lightgbm: "LightGBM", random_forest: "Random Forest", logistic_regression: "Logistic Regression" };
+const f = (v, d) => (v === null || Number.isNaN(v) ? "n/a" : Number(v).toFixed(d));
+body.push(simpleTable(
+  ["Algorithm", "Valid PR-AUC", "Valid Recall @ 1% FPR", "Score 1 payment p95 (ms)", "SHAP 1 payment p95 (ms)", "Size (MB)", "Train (s)"],
+  cmp.map((r) => [
+    NAMES[r.algorithm] + (r.algorithm === champ.algorithm ? " (champion)" : ""),
+    f(r.valid_pr_auc, 5), f(r.valid_recall_at_1pct_fpr, 4), f(r.single_row_p95_ms, 2),
+    r.algorithm === "logistic_regression" ? "n/a" : f(r.shap_single_row_p95_ms, 2),
+    f(r.model_size_mb, 1), f(r.train_seconds, 1),
+  ]),
+  [24, 12, 14, 14, 14, 10, 10]
+));
+body.push(Para([new TextRun({ text: "Why LightGBM wins. ", bold: true }), new TextRun({ text:
+  "Random Forest and LightGBM are tied on validation accuracy (both PR-AUC about 1.000 and recall 1.0 at 1% FPR), " +
+  "so accuracy cannot separate them; Logistic Regression is clearly behind (PR-AUC 0.924) and is out at step 1. " +
+  "Between the two tied models, LightGBM scores one payment 6–12x faster across our runs (about 0.3 ms vs " +
+  "1.7–3.5 ms p95), explains it with SHAP about 7x faster, is about 6x smaller and retrains 5–7x faster. " +
+  "Those are the costs our quality requirements depend on: the latency budget (QA1), cheap per-decision " +
+  "explanations (QA3), and cheap retraining when the data drifts (the “adaptability to drift” softgoal)." })]));
+body.push(P(
+  "Two points for transparency. First, on the test split Random Forest is marginally ahead (PR-AUC 0.99998 vs " +
+  "0.99974); we deliberately did not use that to choose, because choosing on test data leaks it into the " +
+  "decision and leaves no unbiased final check. LightGBM then passed the quality gate on that test split " +
+  "(PR-AUC 0.9997, Recall at 1% FPR 0.9994). Second, latency figures vary between runs and machines, which " +
+  "is why we report a range; the ordering (LightGBM fastest) held in every run.",
+  { italics: true, color: COLORS.soft }
+));
 body.push(P(
   "One honest finding worth stating plainly: fraud is nearly separable in PaySim by two legitimate " +
   "pre-transaction signals — fraudulent transfers drain 97.9% of the sender's balance (vs. 42.5% for " +
@@ -310,7 +340,7 @@ body.push(P("The stack was brought up fresh (docker compose down -v, retrain, do
 
 const shots = [
   ["01_compose_ps.png", "Figure 5. All 8 containers up; scoring, triage-api, redis and mlflow show (healthy) from their own healthchecks — each service can be built, deployed and scaled independently.", 5.5],
-  ["02_mlflow_comparison.png", "Figure 6. MLflow comparing the 3 trained models. LightGBM and Random Forest are close on PR-AUC; LightGBM is chosen for its much faster per-row inference.", 6.0],
+  ["02_mlflow_comparison.png", "Figure 6. MLflow comparing the three trained models' runs side by side. LightGBM and Random Forest are effectively tied on accuracy; Section 7.3 explains how LightGBM was chosen between them.", 6.0],
   ["03_mlflow_registry.png", "Figure 7. The registered model fraud-triage-model, version 1, aliased champion — scoring-service always loads whichever version currently holds this alias.", 6.0],
   ["04a_swagger_allow.png", "Figure 8a. A normal ₹500 transfer via Swagger: very low risk score, ALLOW, 48 ms.", 6.0],
   ["04b_swagger_block.png", "Figure 8b. A transfer that empties the sender's balance into a fresh, zero-balance account: score 0.9999, BLOCK, with plain-language reason codes.", 6.0],

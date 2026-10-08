@@ -1,0 +1,9 @@
+{
+  "algorithm": "lightgbm",
+  "run_id": "d5f8cad90ce748b280eaabab7b3dac7a",
+  "rule": "validation PR-AUC within 0.001 of the best (1.00000), then lowest one-payment p95 latency",
+  "tied_on_accuracy": [
+    "random_forest",
+    "lightgbm"
+  ]
+}

@@ -6,7 +6,7 @@ Short captions for the report (Section 7, Implementation). Paste each image with
 All 8 containers are up, and `scoring`, `triage-api`, `redis` and `mlflow` show `(healthy)` from their own healthchecks. Each service can be built, deployed and scaled on its own.
 
 **02_mlflow_comparison.png**
-MLflow comparing the 3 models we trained. LightGBM and Random Forest are close on PR-AUC (~0.9997 and ~0.99998), but LightGBM is chosen because it scores much faster per row, which matters for the real-time latency budget.
+MLflow comparing the 3 models we trained. LightGBM and Random Forest are effectively tied on accuracy, so we picked LightGBM because it scores and explains a single payment several times faster (see report Section 7.3).
 
 **03_mlflow_registry.png**
 The registered model `fraud-triage-model`, version 1, with the alias `champion`. `scoring-service` always loads whichever version currently holds this alias, so promoting a new model is just moving the alias, not redeploying code.
