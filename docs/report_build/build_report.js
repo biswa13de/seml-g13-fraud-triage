@@ -340,8 +340,8 @@ body.push(P("The stack was brought up fresh (docker compose down -v, retrain, do
 
 const shots = [
   ["01_compose_ps.png", "Figure 5. All 8 containers up; scoring, triage-api, redis and mlflow show (healthy) from their own healthchecks — each service can be built, deployed and scaled independently.", 5.5],
-  ["02_mlflow_comparison.png", "Figure 6. MLflow comparing the three trained models' runs side by side. LightGBM and Random Forest are effectively tied on accuracy; Section 7.3 explains how LightGBM was chosen between them.", 6.0],
-  ["03_mlflow_registry.png", "Figure 7. The registered model fraud-triage-model, version 1, aliased champion — scoring-service always loads whichever version currently holds this alias.", 6.0],
+  ["02_mlflow_comparison.png", "Figure 6. MLflow comparing the three runs on the two numbers the selection rule uses: validation PR-AUC (left axis) and p95 time to score one payment (right axis). LightGBM and Random Forest both reach about 1.000 PR-AUC, but LightGBM's line ends at the bottom (0.28 ms) and Random Forest's at the top (3.49 ms); Logistic Regression starts lower at 0.924. See Section 7.3.", 6.0],
+  ["03_mlflow_registry.png", "Figure 7. The registered model fraud-triage-model, version 3, holding the champion alias. Its tags record the selection rule, the cost-based thresholds and the test PR-AUC (0.9997) that passed the quality gate; scoring-service always loads whichever version holds this alias.", 6.0],
   ["04a_swagger_allow.png", "Figure 8a. A normal ₹500 transfer via Swagger: very low risk score, ALLOW, 48 ms.", 6.0],
   ["04b_swagger_block.png", "Figure 8b. A transfer that empties the sender's balance into a fresh, zero-balance account: score 0.9999, BLOCK, with plain-language reason codes.", 6.0],
   ["05_swagger_422.png", "Figure 9. A negative amount is rejected with 422 before it ever reaches the model — schema validation at the edge.", 5.6],
