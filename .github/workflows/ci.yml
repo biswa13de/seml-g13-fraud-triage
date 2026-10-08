@@ -45,5 +45,8 @@ jobs:
           PY
           python -m training.build_features
 
-      - name: Run tests (model-quality tests skip without a registered model)
-        run: pytest tests/ -v -k "not quality_model and not quality_explainability"
+      # CI has no real dataset and an empty MLflow registry, so tests that need the
+      # registered champion model (tagged automatically in tests/conftest.py) are
+      # excluded here; they run locally with `make test` after `make train`.
+      - name: Run tests (excluding those that need a registered model)
+        run: pytest tests/ -v -m "not requires_model"
