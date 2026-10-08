@@ -34,7 +34,7 @@ md(f"""\
 | 1 | 2025ae05576 | Anirudh Anand | Report lead. Domain/problem statement, requirements and measurable goals, Business View, final report. (25%) |
 | 2 | 2025ae05178 | Aniketh Paul | GR4ML Analytics Design and Data Preparation views, quality requirements. Data pipeline: EDA, ingest, clean, features, split. (25%) |
 | 3 | 2025ae05898 | Pushadapu Sanjay Kumar | Architecture diagram, the two patterns. FastAPI service, input validation, prediction logging, automated tests. (25%) |
-| 4 | 2025af05111 | Biswajeet Mahato (Group Lead) | Model pipeline: train/evaluate, thresholds, MLflow tracking and registry. End-to-end run, screenshots. (25%) |
+| 4 | 2025af05111 | Biswajeet Mahato | Model pipeline: train/evaluate, thresholds, MLflow tracking and registry. End-to-end run, screenshots. (25%) |
 
 ---
 

@@ -409,7 +409,7 @@ const COVER = [
       ["1", "2025ae05576", "Anirudh Anand", "Report lead. Domain and problem statement, ML formulation, requirements and measurable goals (Sections 1 and 2), Business View, final report and PDF.", "25"],
       ["2", "2025ae05178", "Aniketh Paul", "GR4ML Analytics Design and Data Preparation views, top three quality requirements (Sections 3.2, 3.3, 4). Data part of the pipeline: EDA, ingest, clean, features, split.", "25"],
       ["3", "2025ae05898", "Pushadapu Sanjay Kumar", "Architecture diagram (ML and non-ML components), the two patterns (Sections 5 and 6). FastAPI service, input validation, prediction logging, automated tests.", "25"],
-      ["4", "2025af05111", "Biswajeet Mahato (Group Lead)", "Model part of the pipeline: train and evaluate filters, threshold on validation, MLflow tracking and registry. End-to-end run, screenshots, Sections 7.2, 7.3, 8, 9.", "25"],
+      ["4", "2025af05111", "Biswajeet Mahato", "Model part of the pipeline: train and evaluate filters, threshold on validation, MLflow tracking and registry. End-to-end run, screenshots, Sections 7.2, 7.3, 8, 9.", "25"],
       ["", "", "", "Total", "100"],
     ],
     [5, 12, 18, 51, 9]
